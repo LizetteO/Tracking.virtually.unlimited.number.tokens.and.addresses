@@ -1,0 +1,99 @@
+---
+
+title: Non-privileged access to data independent of filesystem implementation
+abstract: An application programming interface (API) module provides access to data, independent of filesystem implementation in a non-privileged user mode. A discovery volume having a filesystem recognizable by an operating system has cover files which prevent damage to data stored in an unrecognizable primary volume. The discovery volume also includes a data access API available for execution in a non-privileged user mode to render the primary volume accessible by operating systems which would otherwise find the primary volume unrecognizable.
+url: http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PALL&S1=08073886&OS=08073886&RS=08073886
+owner: Microsoft Corporation
+number: 08073886
+owner_city: Redmond
+owner_country: US
+publication_date: 20090220
+---
+Access to data across multiple filesystems is a significant concern for computer users. Users may encounter difficulties when trying to access filesystems supported in a source system but not supported in an accessing system. For example an older version of an operating system may be unable to access a volume created in a newer version of the operating system because of new features present in the filesystem of the newer version which render the newer version inaccessible to the older version.
+
+Attempts to access volumes containing a filesystem incompatible with the accessing device may have unintended consequences for users. The accessing system may not recognize the filesystem of the source system and present the volume as raw or apparently unrecognized. At the least the accessing system may not be able to determine that data is present on that volume. At worst an accessing system which fails to recognize the volume may prompt the user to reformat the entire volume causing loss of the data in the volume.
+
+Furthermore loading of special drivers or software to allow access to a volume ordinarily unrecognizable by an operating system has traditionally required execution in kernel mode thus running afoul of security policies which limit execution to user mode.
+
+An original boot region or boot sectors of a primary volume on a computer readable storage medium is defined as a virtualized region. The virtualized region and its data are moved to another location on the primary volume. A discovery volume is initialized which takes the place of the virtualized region using an application programming interface API . The discovery volume acts as an overlay for the primary filesystem and comprises a filesystem recognizable by a desired array of accessing devices. The discovery volume includes one or more pointers in its boot region which lead to the virtualized region relocated to accommodate the discovery volume at the beginning of the volume. For example a discovery volume using a File Allocation Table FAT filesystem contains boot region entries consistent with a FAT boot region and one or more pointers to the relocated virtualized boot region of the primary filesystem.
+
+The discovery volume stores a data access application programming interface API configured to allow an operating system of an accessing system to read a primary volume filesystem which would otherwise be unrecognizable by the operating system. This data access API executes in a non privileged user mode allowing its execution without requiring privileged kernel mode access. Use of an overlay comprising a commonly recognized format for example a FAT volume thus renders the primary filesystem on the volume independent of a source system. The discovery volume may also contain an information file for users alerting them to the presence of data on the volume.
+
+Cover files protect data in the primary filesystem when the primary filesystem is unrecognized by the accessing system. Cover files are file entries in the discovery volume filesystem which make it appear to the accessing system as though the discovery volume claims space actually used by the primary filesystem. Thus while a discovery volume may actually utilize a small number of sectors on the disk an accessing system may see the cover files of the discovery volume consuming the entire space.
+
+When attempting to mount a disk containing a primary filesystem unrecognized by the accessing system the accessing system will surface the discovery volume to the user. Based on the information presented in that discovery volume a user may ascertain that another filesystem is present. Additionally the presence of the discovery volume and cover files prevents an erroneous determination that the primary volume is raw or unformatted and a resulting presentation of a prompt to reformat the volume while also preventing unwanted overwriting of otherwise unrecognizable data in the primary volume.
+
+Thus the discovery volume is visible to a wide array of accessing systems the cover files prevent accidental overwrite of data otherwise unrecognizable by the accessing systems and the data access API allows the accessing systems to access the primary volume storing primary data using a non privileged user mode.
+
+This summary introduces the subject matter described below in the Detailed Description. This summary is not intended to identify essential features of the claimed subject matter nor is it intended for use in determining the scope of the claimed subject matter.
+
+As noted above when a filesystem on a volume is unrecognized a user will be unable to access the data stored in the volume and may even be prompted to reformat or otherwise erase the data stored on that volume which appears raw. This application describes an application programming interface API and system to provide access to data independent of filesystem implementation in a non privileged user mode.
+
+The data at the beginning of a volume of a computer readable storage medium including an original filesystem boot region is defined as a virtualized region. The virtualized region is first moved to another location in a primary volume. A discovery volume is then written to the recently vacated space at the beginning of the volume. The discovery volume boot region contains entries consistent with a widely recognized filesystem boot region including cover files and pointers to the virtualized region. The cover files claim blocks used by the primary volume filesystem as being used in the discovery volume filesystem. In other words the cover files make it appear to the accessing system as though the discovery volume uses space actually used by the primary filesystem. Thus while a discovery volume may actually utilize a small number of sectors on the disk an accessing system may see cover files of the discovery volume consuming the entire space. This makes the entire volume appear to be in use preventing accidental formatting or inadvertent overwrites of data. Cover files also provide access to the underlying volume.
+
+The discovery volume stores a data access application programming interface API configured to allow the operating system of the accessing system to recognize a filesystem which would otherwise be unrecognizable by the accessing operating system. This data access API executes in a non privileged user mode allowing its execution without requiring privileged kernel mode access which may be restricted because of security policies or other concerns.
+
+The discovery volume may also contain one or more information files describing the underlying primary filesystem. The information files may be visible to users and contain data which is human readable machine readable or both as to the nature of the other volumes on the disk.
+
+In one implementation FAT format may be used for the discovery volume filesystem. Because of the FAT format s wide support the discovery volume would be visible across a wide range of platforms and operating systems. However any filesystem may be utilized which provides the desired visibility commonality across potential accessing systems.
+
+Thus when an accessing system attempts to mount a physical disk containing an unrecognizable primary volume the accessing system will find the discovery volume accessible. The presence of the discovery volume prevents the accessing system from prompting the user to reformat the volume. The presence of the cover files prevents an inadvertent overwrite of data on the unsurfaced that is an unrecognized primary volume while the data access API gives an accessing system the ability to recognize and access the primary volume in a non privileged user mode.
+
+Storage device may be any computer readable storage medium including random access memory RAM read only memory ROM electrically erasable programmable read only memory EEPROM flash memory or other solid state memory technology compact disk read only memory CD ROM digital versatile disks DVD or other optical disk storage magnetic cassettes magnetic tape magnetic disk storage or other magnetic storage devices or any other medium which can be used to store the desired information and which can be accessed by a computing device. For example storage device may be a removable flash memory drive or a removable hard drive which the user may carry to other computers.
+
+Stored on storage device is a discovery volume which contains a primary volume . Discovery volume is hidden because primary volume is recognized and thus accessible by operating system A. Within discovery volume is primary volume . Discovery volume comprises a data access API and a cover file . Within primary volume is primary data . Primary data may comprise data stored by computer or other computers and may include data files such as documents multimedia files etc.
+
+Computer system running operating system B is then connected to storage device . Operating systems A and B may be different operating systems or different versions of the same operating system. In the illustrated example operating system B on computer is unable to recognize the filesystem used by operating system A of computer as shown at . Thus computer cannot access the primary volume . However operating system B on computer is able to access discovery volume because it uses a filesystem which is visible to operating system B. Thus discovery volume is visible while primary volume is not.
+
+When computer executes the data access API in non privileged user mode the primary volume and primary data are now accessible along with the discovery volume and its contents as shown at .
+
+Also stored on discovery volume is data access API which may be executed in a non privileged user mode of operating system to allow access to primary data .
+
+At an information file may also be present within the discovery volume . This information file may be visible to users and contain human readable information machine readable information or both as to the nature of the primary volume on the disk. This information file may be stored in plain text hypertext markup language HTML or other suitable file format. The information file may contain a warning to users that the primary volume contains data and refer them to a specific Internet address for technical support.
+
+At the data access API stored within discovery volume gives an accessing system the ability to recognize and access the primary volume and primary data when executed in a non privileged user mode of the operating system . Within primary volume is the stash file containing the relocated boot regions of the primary filesystem .
+
+Where the discovery volume file structure uses a FAT format within the virtualized boot region additional information such as a complete BIOS parameter block BPB and associated fields may be present. Because some portions of the boot region are not critical for FAT functionality other data may be stored therein including pointers to metadata of components utilizing the discovery volume. As a result these fields may be used to store information necessary for the primary volume or other filesystem volumes to function while still leaving a functional FAT discovery volume. When the FAT structure is in use the boot region contains fields representing the FAT file structure within the discovery volume.
+
+When the FAT file structure is used by the discovery volume the VolumeLabel field 0x2b may be updated to contain EncryptedVolume or a similar string useful to identify the filesystem of the primary volume .
+
+The access library module provides the ability to access a primary volume in a non privileged user mode of an operating system. Illustrative code for one implementation of the cover file creation module in the C language follows 
+
+The discovery volume management module builds a discovery volume and associated cover files. Illustrative code for one implementation of the discovery volume management module in the C language follows 
+
+At the primary volume is shown after moving the original boot area and creating a discovery volume . Within discovery volume is virtualized boot region FAT root directory information file data access API and other components for the functionality of the discovery volume filesystem. The remainder of primary volume comprises primary data free clusters and original boot area which may be stored in a single stash file. This single stash file may be contiguous within the primary volume and may contain additional space for future use .
+
+At the apparent volume is shown after executing the data access API in non privileged user mode. The same operating system of above is now able to access the discovery volume the primary data free clusters and the original boot area . The original boot area may be hidden read only have access restricted by the data access API or otherwise be protected from accidental change.
+
+At when the discovery volume is surfaced and no cover files are present the portions of the volume containing the primary data original boot area and free clusters appear to be apparently unallocated or raw space . This unallocated space may result in a prompt to a user to format store files within or make some other undesirable change to the volume which would damage the actual data stored in a filesystem unrecognized by the accessing system.
+
+At cover file entries are present in the discovery volume filesystem for example the FAT file listing . A cover file s presents a user with a discovery volume which at is apparently full. Thus no prompt for reformatting is presented and with no free space being shown as available in the discovery volume filesystem the actual data under the cover files cannot be overwritten.
+
+In another implementation a discovery volume may be configured where the discovery file system does not extend over the entire volume. In this implementation there are no cover files in the discovery volume and the discovery volume does not extend over the entire space allocated for the primary volume and reports itself as only consuming the space in the virtualized region. This implementation provides protection from accidental overwriting where an operating system does not typically permit multiple file systems within one volume.
+
+This implementation may be used when non privileged access to the primary file system through the cover files is unnecessary. For example there may be a file in the discovery volume that describes to the user how to find and install software to enable access or a tool may be present that will rewrite transform and or convert the data structures on the disk to enable the accessing system to surface the data stored in the primary file system. In one implementation of this the changes made by such a tool may be permanent and the discovery volume may be erased in the process.
+
+At a discovery volume is initialized in memory. This discovery volume uses a filesystem which is visible to other operating systems. For example the FAT filesystem is widely recognized across multiple operating systems and may be used.
+
+At a discovery volume boot region is initialized within the discovery volume. This discovery volume boot region is a virtualized boot region that is it contains the boot region information of the discovery volume filesystem while including pointers to the primary volume filesystem. When the primary volume filesystem is recognized the pointer allows the accessing system to redirect to the original boot area stored in the volume. When the primary volume filesystem is not recognized the virtualized boot region provides access to the discovery volume filesystem.
+
+At the original real boot area is moved to a new location in the primary volume. For example this location may be a single contiguous stash file which is located anywhere except at the beginning of the volume in the boot sector s .
+
+At a pointer is constructed in the discovery volume boot region which points to the original boot area which contains original boot regions.
+
+At the discovery volume is written to the beginning of the volume. This placement in the beginning of the volume insures that an operating system will read the discovery volume boot regions rather than the original boot area.
+
+At cover file entries are written to the discovery volume filesystem. These cover files are used to make the volume appear to be full of data when surfaced by the discovery volume.
+
+At a data access API including the access library module is written to the discovery volume. Placement of the data access API into the discovery volume makes it visible and accessible to an accessing system which can read the discovery volume filesystem but not the primary filesystem. This data access API is configured to execute in user mode and allow an operating system which cannot natively recognize the primary filesystem to recognize and access the primary volume data.
+
+At when the primary volume filesystem is recognized by the operating system and at the primary volume and primary data are accessible.
+
+When at the primary volume filesystem is not recognized at the discovery volume is presented to the user and the discovery volume boot region is read. Cover files make the primary volume appear to be full. Primary data in the primary volume remains inaccessible.
+
+At when the data access API stored in the discovery volume is executed in the non privileged user mode of the operating system at the data access API access library module provides the operating system with the functionality to access the primary volume and the primary data within.
+
+Although specific details of illustrative methods are described with regard to the figures and other flow diagrams presented herein it should be understood that certain acts shown in the figures need not be performed in the order described and may be modified and or may be omitted entirely depending on the circumstances. As described in this application modules and engines may be implemented using software hardware firmware or a combination of these. Moreover the acts and methods described may be implemented by a computer processor or other computing device based on instructions stored on memory the memory comprising one or more computer readable storage media CRSM .
+
+The CRSM may be any available physical media accessible by a computing device to implement the instructions stored thereon. CRSM may include but is not limited to random access memory RAM read only memory ROM electrically erasable programmable read only memory EEPROM flash memory or other solid state memory technology compact disk read only memory CD ROM digital versatile disks DVD or other optical disk storage magnetic cassettes magnetic tape magnetic disk storage or other magnetic storage devices or any other medium which can be used to store the desired information and which can be accessed by a computing device.
+

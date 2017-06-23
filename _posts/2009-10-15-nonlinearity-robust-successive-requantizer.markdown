@@ -1,0 +1,183 @@
+---
+
+title: Nonlinearity robust successive requantizer
+abstract: A successive requantizer, which serves as a replacement for a ΔΣ modulator in a fractional-N PLL or a DAC, and avoids spurious tone problems, thereby circumventing the tradeoffs that result from reliance on the common approach of making highly linear analog circuitry to avoid spurious tones. A successive requantizer fractional-N PLL of the invention has the potential to reduce power consumption and the cost of commercial communication devices. The successive requantizer performs digital quantization one bit at a time in such a way that the quantization noise can he engineered to have desirable properties such as non-linearity robustness. The successive requantizer is applicable to most high-performance digital communication systems, such as cellular telephone handsets and wireless local and metropolitan area network transceivers.
+url: http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PALL&S1=07986250&OS=07986250&RS=07986250
+owner: The Regents of the University of California
+number: 07986250
+owner_city: Oakland
+owner_country: US
+publication_date: 20091015
+---
+The application claims priority under 35 U.S.C. 119 from prior provisional application Ser. No. 61 105 635 which was filed on Oct. 15 2008.
+
+This invention was made with government support under Contract No. CCF0515286 awarded by National Science Foundation. The government has certain rights in the invention.
+
+A field of the invention is wireless communications. Another field of the invention is digital to analog converters. Example applications of the invention include high performance digital communication systems such as cellular telephone handsets and wireless local and metropolitan area network transceivers.
+
+Virtually all wireless communication systems require local oscillators for up conversion and down conversion of their transmitted and received signals. Most commonly the local oscillators are implemented as fractional N PLLs phase locked loops . Fractional N PLLs can generate a high quality high frequency signal from a digital input stream and a lower frequency reference waveform.
+
+The spectral purity of the local oscillator in a transceiver is a critical factor in overall transceiver performance. Communication standards therefore explicitly or implicitly stipulate stringent phase noise requirements on the local oscillators. Most standards dictate the maximum acceptable phase noise power in various frequency bands. Additionally most standards require that spurious tones in the local oscillator s phase noise be highly attenuated particularly in critical frequency bands. DACs also have stringent spurious tone requirements in wireless applications digital audio applications and instrumentation applications. Digital audio and instrumentation spurious tone requirements are particularly critical in many consumer products.
+
+Modern digital to analog converters DACs and fractional N phase locked loops PLLs rely upon a digital delta sigma modulator modulator to coarsely quantize a constant or slowly varying digital sequence. The quantized sequence can be viewed as the sum of the original sequence plus spectrally shaped quantization noise that has most of its power outside of a given low frequency signal band. Ultimately the quantized sequence is converted to an analog signal and further processed by analog circuitry including a low pass filter to suppress quantization noise outside of the signal band.
+
+If y n could be set directly to the desired fractional value a directly then the output frequency of the PLL would settle to N f thereby achieving the goal of the fractional N PLL. Unfortunately y n is restricted to integer values because the divider is only able to count integer VCO cycles whereas a is a fractional value. To circumvent this problem y n is designed to be a sequence of integers that average to . The input to the modulator is plus pseudo random least significant bit LSB dither so its output has the form y n s n where s n is a zero mean sequence consisting of spectrally shaped quantization noise and LSB dither. The dither prevents s n from containing spurious tones that would otherwise show up as spurious tones in the PLL s output. Hence the output frequency settles to an average N f as desired although s n introduces phase noise.
+
+For most wireless applications spurious tones can be sufficiently suppressed only with design tradeoffs that significantly degrade other aspects of performance. This is particularly problematic in fractional N PLLs wherein the input to the modulator usually is a constant and the output sequence from the modulator is converted to analog form and subjected to various nonlinear operations because of nonideal circuit behavior. The common approach to address spurious tones is to make the analog circuitry very linear so that the spurious tones have sufficiently low power for the given application. This limits design options and results in higher analog circuit power consumption than would be required if fewer linear analog circuits could be tolerated.
+
+The tradeoffs tend to increase power consumption and circuit area limit the choice of reference frequencies and dictate low PLL bandwidths which preclude on chip loop filters. They also become less effective in system on chip designs as CMOS circuit technology is scaled into the sub 100 nanometer regime. Therefore the spurious tone problem negatively affects power consumption cost and manufacturability of wireless transceivers and the problem gets worse as CMOS circuit technology scales with Moore s Law.
+
+To address the quantization noise researchers have described methods of implementing noise shaped quantizers. See e.g. A. J. Magrath and M. B. Sandler Efficient Dithering of Sigma delta Modulators with Adaptive bit Flipping Electron. Lett vol. 31 no. 11 pp. 846 847 May 1995 S. H. Yu Noise Shaping Coding through Bounding the Frequency Weighted Reconstruction Error IEEE Trans. Circuits Syst. II Expr. Briefs vol. 53 no. 1 pp. 67 71 January 2006 D. E. Quevedo and G. C. Goodwin Multistep Optimal Analog to Digital Conversion vol. 52 no. 3 pp. 503 515 March 2005 I. Daubechies and R. DeVore Approximating a Bandlimited Function Using Very Coarsely Quantized Data A Family of Stable Sigma Delta Modulators of Arbitrary Order . vol. 158 no. 2 pp. 679 710 2003.
+
+Generally known phase noise cancelling fractional N PLLs are effective to cancel phase noises that result from mismatches between positive and negative current sources in the charge pump. However these methods specifically focus on stabilizing noise shaped coders and do not address the effect of nonlinearities on the quantization error.
+
+An embodiment of the invention is a successive requantizer which serves as a replacement for a modulator in a fractional N PLL or DAC and avoids the above mentioned spurious tone problem thereby circumventing the tradeoffs that result from reliance on common approach of making highly linear analog circuitry to avoid spurious tones. A successive requantizer fractional N PLL of the invention has the potential to reduce power consumption and the cost of commercial communication devices. A successive requantizer of the invention performs digital quantization one bit at a time in such a way that the quantization noise can be engineered to have desirable properties such as non linearity robustness. The invention is applicable to most high performance digital communication systems such as cellular telephone handsets and wireless local and metropolitan area network transceivers.
+
+It is critical spurious tones in the noise introduced by DACs and fractional N PLLs have very low power. Unfortunately spurious tones are inevitable in the phase noise of fractional N PLLs. In principle dither applied to a modulator can prevent the quantization noise from containing any spurious tones whatsoever. In practice digital delta sigma modulators are major sources of spurious tones in oversampling DACs and fractional N PLLs and are believed by the present inventors to give rise to spurious tones whenever their quantization noise is subjected to nonlinear distortion.
+
+The present invention identifies and addresses a surprising fundamental source of spurious tones in fractional N PLLs namely the digital modulator. The fractional N PLL is identified as the fundamental source of spurious tones in the PLL s phase noise. This is true even when dither is used to prevent spurious tones in the modulator s quantization noise. Regardless of how dither is applied spurious tones are induced when the modulator s quantization noise is subjected to non linear distortion. In a typical modulator used in a fractional N PLL the interaction of the constant input and the modulator s first accumulator gives rise to hidden periodicities. Dither provides sufficient randomness to avoid spurious tones in y n but not to avoid spurious tones when s n is subjected to nonlinear distortion.
+
+This is particularly problematic in fractional N PLLs wherein the output sequence from the modulator is converted to analog form and subjected to various non linear operations because of non ideal circuit behavior. In embodiments of the invention a successive requantizer replaces the modulator and avoids the spurious tone problems. The successive requantizer can also serve as a replacement for a modulator in digital analog converter and example embodiment DACs take the same form as a fractional N PLL.
+
+An embodiment of the invention is a successive requantizer which serves as a replacement for a modulator in a fractional N PLL and avoids the above mentioned spurious tone problem thereby circumventing the tradeoffs that result from reliance on common approach of making highly linear analog circuitry to avoid spurious tones. A successive requantizer fractional N PLL or DAC of the invention has the potential to reduce power consumption and the cost of commercial communication devices. A successive requantizer of the invention to performs digital quantization one bit at a time in such a way that the quantization noise can be engineered to have desirable properties such as non linearity robustness. The invention is applicable to most high performance digital communication systems such as cellular telephone handsets and wireless local and metropolitan area network transceivers.
+
+Preferred embodiments of the invention will now be discussed with respect to the drawings. The drawings may include schematic representations which will be understood by artisans in view of the general knowledge in the art and the description that follows. Features may be exaggerated in the drawings for emphasis and features may not be to scale.
+
+Fractional N PLLs used in communications applications and DACs using modulators ultimately generate analog waveforms. Each such waveform contains components corresponding to digitally generated quantization noise s n and in the case of fractional N PLLs its running sum 
+
+Inevitable non ideal analog circuit behavior causes non linear distortion. The distortion can be any non linear function but for almost all practical applications can be represented by a memory less truncated power series. This gives rise to components in the output waveform corresponding to s n for p 1 2 3 . . . h and t n for p 1 2 3 . . . h where h and hare the highest significant orders of distortion for the given application applied on s n and t n respectively.
+
+Most communication system standards specify required performance in terms of quantities that can be measured using spectrum analyzers so the properties of the waveforms typically are quantified in the laboratory using spectrum analyzers. Although the waveforms themselves are considered to be random processes in most cases spectrum analyzers can only average over time not over ensemble. Therefore in such applications the properties of the periodograms of s n and t n given by
+
+are of particular interest rather than traditional power spectral density PSD functions. It is well known that in certain cases the expected values of the periodograms converge to the true PSD functions in the limit as L but in the applications mentioned above this is not a requirement or even relevant to the measured performance. The successive requantization of the invention can be understood with respect to the properties of the periodograms given by 2 and 3 .
+
+The input and output of the successive requantizer are integer valued. For the fractional N PLL application the goal is to quantize which is a fractional value between 0 and 1 and in this design a is taken to be a constant multiple of 2. Therefore a is scaled by 2prior to the successive requantizer to convert it into an integer. As explained below the 3 bit integer valued output of the successive requantizer is y n s n where s n is quantization noise. While the example assumes that each quantization block quantizes its input sequence by one bit the quantization blocks can quantize their inputs by more than one bit as will be appreciated by artisans.
+
+As shown in each quantization stage block simultaneously halves its input and quantizes the result by one bit every sample period. The output of the dth quantization block is x n x n s n 2 where s n a sequence generated within the quantization block. At each time n s n is chosen such that x n s n does not exceed the range of a 20 d bit calculated by 4 N d where N is the number of quantization blocks two s complement integer and the parity of s n is the same as that of x n . The range can be generally stated as K d bit two s complement integer where the parity of s n is the same as that of x n where K is determined by the number of quantization stages the number of bits quantized per stage and the logic which generates s n .
+
+The parity restriction ensures that x n s n is an even number so its LSB is zero. Discarding the LSB simultaneously halves the quantization block s input value and quantizes the result by one bit. The resulting quantization noise is s n 2 so the successive requantizer s overall quantization noise is
+
+Therefore s n is a linear combination of the s n sequences so it inherits the properties of the s n sequences.
+
+The example presented in 4 i is for a specific number of input bits and quantization but can be generalized as in 4 ii for different numbers of input bits and different numbers of bit quantizations. Generalized for an input that is a sequence of B bit numbers x n and an output that is a sequence of B K bit numbers x n where n 0 1 2 . . . is the time index of the sequences. The generalization is shown in . The successive requantizer then consists of K quantization blocks each of which quantizes its input by one bit so the successive requantizer quantizes K bits overall. Each quantization block generates a quantization sequence s n with the property that x n s n is an even number for each n where x n is the quantization block s input sequence. The quantization block adds s n to x n and discards the least significant bit LSB to implement the 1 bit quantization. Without loss of generality numbers within the successive requantizer are taken to be integers with a two s compliment binary number representation. Since x n s n is an even number for each n its LSB is zero so discarding the LSB does not incur a truncation error. Hence the quantization noise of the successive requantizer is a weighted sum of the s n sequences.
+
+The properties of the quantization noise s n can be engineered by appropriate design of the s n sequences. So far the only restriction on the s n sequences is that x n s n must be an even integer for each n and d. In the example successive requantizer this restriction on the s n sequences is that they must be chosen such that x n s n is a 20 d bit two s complement even integer for each n and d. This leaves considerable flexibility in the design of the s n sequences which can be exploited to achieve the desired quantization noise properties.
+
+The successive requantizer partially exploits this flexibility to ensure that the running sum of each s n sequence i.e. 
+
+is bounded for all n and each s n has a smooth PSD power spectral density that increases monotonically with frequency. This implies that s n is highpass shaped quantization noise that is free of spurious tones and the PSD of s n is zero at 0.
+
+This still leaves flexibility in the design of the s n sequences which can exploited as described below to ensure that the sequences
+
+The objective is to ensure that the successive requantizer s quantization noise does not introduce significant spurious tones when subjected to the degree of nonlinear distortion expected from the analog circuits within the PLL. Circuit simulations can be used during PLL design to verify that preventing spurious tones from occurring in the s n and t n sequences is sufficient to achieve this objective.
+
+It can be verified that t n is a discrete valued Markov random sequence conditioned on the parity of x n . Whenever x n is odd the one step state transition matrix for t n is given by 11 7 
+
+where PX Y denotes the conditional probability of event X given event Y o n is the LSB of x n and T 2 T 1 T 0 T 1 T 2. The specific state transition matrices corresponding to the quantization block
+
+Details on the derivation of these state transition matrices are provided below in the successive quantization detail section. These state transition matrices ensure that the s n and t n sequences are free of spurious tones because each is a random process whose autocorrelation function converges to a constant as its time spread increases. Furthermore the PSD of s n has a zero at 0 and increases at 6 dB per octave as increases from zero. In this respect the quantization noise shaping of this version of the successive requantizer is comparable to that of a first order modulator.
+
+Successive requantizers with higher than first order quantization noise shaping can also be designed. For example second order quantization noise shaping can be achieved by quantization blocks that calculate s n as a function the running sum of t n in addition to t n a random sequence and the parity of x n . However the fractional N PLL in this work is a phase noise cancelling fractional N PLL so higher than first order shaping is not necessary because most of the quantization noise is removed prior to the loop filter via a DAC.
+
+can be bounded for all n and each t n has a smooth power spectral density that increases monotonically with frequency.
+
+A tradeoff related to the quantization block in is that its reduced susceptibility to nonlinearity induced spurious tones comes at the expense of increased quantization noise power. For example if it is desired to have quantization noise with a first order highpass spectral shape but it is not necessary to prevent nonlinear distortion from inducing spurious tones in the quantization noise and its running sum a quantization block that implements
+
+can be used where r n is an independent random sequence that takes on the values 1 and 1 with equal probability. In this case s n takes on values of 1 0 and 1 whereas the t n generated by the quantization block of takes on values of 1 0 1. Consequently the power of the quantization noise from a quantization block based on 11 is significantly lower than that from the quantization block of .
+
+This example suggests what is believed to be a fundamental design tradeoff reduced susceptibility to nonlinearity induced spurious tones comes at the expense of increased quantization noise power. Increased quantization noise is unlikely to be a significant problem in phase noise cancelling fractional N PLLs but it is likely to be an issue in fractional N PLLs that lack phase noise cancellation. Any particular design will benefit from analytical quantification of the tradeoff and its effect on the performance of a particular fractional N PLL and especially in the case of a PLL that lacks phase noise cancellation. Preferred embodiments of the invention use a phase noise cancelling PLL design such as the design that is described in commonly owned U.S. patent application Ser. No. 12 352 293 the 293 application filed Jan. 12 2009 and entitled Adaptive Phase Noise Cancellation for Fractional N Phase Locked Loop which application is incorporated by reference herein .
+
+The fractional N PLL includes the successive requantizer to that is shown in and the remainder of the circuit preferably conducts adaptive phase noise cancellation as conducted by the preferred embodiments in the 293 application. The fractional N PLL includes a sampled loop filter that drives a VCO with preferred embodiments using a sampled loop filter having two separate loop filter halves that drive separate half sized parallel varactors in the VCO as in the 293 application. An amplifier uses a 12 MHz crystal and supplies the reference clock voltage to a phase frequency detector charge pump . The timing of pulses in the reference voltage and pulses received from the divider determines whether the PFD Charge pump will produce a positive or negative pulse of current to increase or decrease the VCO frequency. The successive requantizer acts as discussed above to provide a sequence of values that average to a desired fractional value. A noise cancellation path including a filter dithered quantizer segmented DEM encoder and DAC bank discrete time integrates the quantization noise to obtain a digital sequence and transform it via the DAC into a current pulse of fixed duration and variable amplitude that equals the quantization noise portion of the charge in the corresponding charge pump pulse. A prototype integrated circuit in accordance with also included alternate circuitry that could be enabled or disabled including a modulator which could be optionally be used instead of the successive requantizer and an offset pulse generator that can be enabled or disabled. In the IC prototype the loop filter s sampling could be enabled or disabled and when it was disabled the loop filter reduces to a conventional loop filter.
+
+The divider is similar to the divider in the 293 application except with minor changes to provide timing signals that control the offset current generator and open the loop filter switch each reference period. As described in 293 application the necessary timing signals are obtained by a chain of flip flops clocked at half the VCO frequency. The timing signal used to close the loop filter switch each reference period could similarly have been derived within the divider block but an RC one shot circuit timed from an output of the divider block with a nominal duration of 25 ns was used in the prototype integrated circuit instead for simplicity because the length of time the switch is left open is not critical. Provided the switch is open when the loop filter s input current is non zero the PLL dynamics are relatively insensitive to the length of time it is open. Testing of the prototype with the successive requantizer offset pulse generator and sampled loop filter enabled and chosen such that f 50 kHz revealed fractional spurs well inside the 975 kHz loop bandwidth but all below 70 dBc in power. Four copies of the IC were tested. Table 1 shows the worst case measurements taken from the four ICs. An IC wiring mistake disabled the DAC calibration circuitry so the measurements described above were made after a one time manual adjustment of the DAC gain. To confirm the diagnosis of the mistake it was corrected in one copy of the IC by FIB microsurgery but with the anticipated side effect of a coupling path that increased the measured in band phase noise 3 MHz phase noise and largest in band fractional spur by 10 dB 3 dB and 3 dB respectively above those shown in Table 1.
+
+The restriction to first order highpass shaped quantization noise discussed above still leaves flexibility in the design of the s n sequences. This flexibility is exploited to ensure that s n for p 1 2 . . . h and t n for p 1 2 . . . hare free of spurious tones where hand hare positive integers. By definition if s n and t n contain spurious tones at a frequency then Equations 2 and 3 above respectively are expected to be unbounded in probability at as L . Therefore to establish that there are no spurious tones in either s n or t n it is sufficient to show that Equations 2 and 3 are bounded in probability for all as L . A spurious tone at 0 is just a constant offset. Many practical systems are able to tolerate or compensate for this offset so this case is excluded from consideration. Theorems 1 and 2 below present sufficient conditions on the s n sequences for 2 and 3 to be bounded in probability for every L 1 and 0
+
+However if the quantization noise or its running sum is subjected to non linear distortion spurious tones can be induced. The presence of spurious tones implies that subjecting t n to second order distortion is sufficient to induce spurious tones even though t n is known to be free of spurious tones.
+
+The spur generation mechanism can be understood by considering the first quantization block. Suppose the input to the successive requantizer is an odd valued constant and t n 1 0 for some value of n. Then 11 implies that s n s n 1 is either 1 1 or 1 1 depending on the polarity of P n . It follows from 5 that t n t n 1 is either 1 0 or 1 0 and by induction t n has the form . . . 0 1 0 1 0 1 0 . . . . Therefore t n has the form . . . 0 1 0 1 0 1 0 . . . which is periodic. A similar but more involved analysis can be used to show that the t n sequences for d 0 also contain periodic components. These periodic components cause the spurious tones.
+
+For the purpose of illustrating the principle of successive requantization for tone free quantization sequences the remainder of the description assumes that the input to the quantizer x n is an integer valued and deterministic sequence for n 0 1 . . . and that the successive requantizer is designed such that the following properties are satisfied 
+
+Property 2 guarantees first order spectral shaping of the quantization error by ensuring that t n takes on a finite number of values for all n. However it need not be an optimal bound on the quantization error of the successive requantizer. Relaxing this bound and hence incurring more quantization error power permits the removal of spurious tones under non linearities.
+
+Property 1 and the assumption that x n is integer valued imply that s n is an even integer when x n is even and an odd integer otherwise. Therefore 5 implies that t n is integer valued and Property 2 further implies that it is restricted to a finite set of values. Let T T . . . Tdenote these values. Therefore the function in Property 3 takes on values restricted to the set T T . . . T.
+
+It follows from Properties 1 2 and 3 that x n s n and t n for d 0 1 K 1 and n 1 2 . . . depend only on the set of iid random variables r n d 0 1 . . . K 1 n 0 1 2 . . . and the deterministic successive requantizer input sequence x n n 1 2 . . . . Therefore the sample description space of the underlying probability space is the set of all possible values of the random variables r n d 0 1 . . . K 1 and n 0 1 2 . . . .
+
+where gis a deterministic memoryless function. Similarly for any pair of integers n n 0 recursively substituting 12 into itself m n n 1 times implies that 1 2 1 2 18 
+
+Repeatedly substituting 16 into 17 to eliminate the variables o n . . . o 1 and then recursively substituting the result into itself to eliminate the variables t m k 0 . . . d 1 m 1 . . . n shows that t n is a random variable that depends only on x n which is deterministic and the random variables r m k 0 1 . . . d m 1 2 . . . n. This in conjunction with 16 implies that o n is a random variable that depends only on x n and the random variables r m k 0 1 d 1 m 1 2 n. In particular since the random sequence o n n 0 1 2 . . . does not depend on the random sequence r n n 0 1 2 . . . and since all the random variables r m d 0 1 . . . K 1 n 0 1 2 . . . are statistically independent by Property 3 it follows that o n n 0 1 2 . . . and r n n 0 1 2 . . . are statistically independent random sequences. By similar reasoning the random variable t n is statistically independent of the random variables r m m n 1 n 2 . . . 
+
+Hence 18 implies that t n conditioned on the random variables t n o n 1 o n 2 o n is a function only of the statistically independent random variables r n r n 1 . . . r n . By definition for i j the random variables r n r n 1 . . . r n are statistically independent of the random variables r n r n 1 . . . r n . Therefore for i j the random variables t n and t n and conditioned on t n t n o n 1 o n 2 . . . o n o n 1 o n 2 . . . o n are statistically independent. Consequently for any positive real numbers p . . . p 
+
+where the second equality follows from 12 and the independence of the r n n 1 2 . . . sequences for d 0 K 1. This implies that the pmf of the random variable t n conditioned on t n o n 1 o n 2 . . . o n is independent of any additional conditioning by and t n o n 1 o n1 2 . . . o n for i j.
+
+The statistical independence of o n and r n together with 12 imply that t n n 0 1 . . . is a discrete valued Markov random sequence conditioned on the sequence o n n 0 1 . . . . Whenever x n is odd the one step state transition matrix for t n is given by 11 . 20 
+
+Equation 14 implies that each possible value of s n is given by T Tfor some pair of integers i and j 1 i j N so 1111. 22 
+
+Given that t n is restricted to N possible values s n is restricted to N possible values where N N. With identical reasoning to that used to proceed from 15 to 19 it follows that
+
+Given that t n n 0 1 . . . is a discrete valued Markov random sequence conditioned on the sequence o n n 0 1 . . . the conditional probability mass function pmf of t n given t n and o n is equal to the conditional pmf of t n given t n t n 1 and o n . Therefore 14 implies that 23 is equivalent to
+
+The following definitions are used by the theorems presented below. In analogy to the matrices Aand A let 11 25 and 0 26 where Si 1 i N is the set of all possible values of sd n . Property 3 ensures that neither matrix is a function of n and d. It follows from 22 that each non zero element of So or Se is equal to an element in Ao or Ae respectively. For example if Sk Tj Ti then the element in the ith row and kth column of Sis equal to the element in the ith row and jth column of A. In this fashion once Aand Aare known Sand Scan be deduced.
+
+Suppose a sequence of vectors b n b n . . . b n converges to a constant vector b as n . Then the convergence is said to be exponential if there exist constants C 0 and 0 
+
+Corollary 1 Under the assumptions of Theorem 1 Iis bounded in probability for all L 1 and for each satisfying 0
+
+The notation above means that Jand Jare defined as the first and second terms respectively to the left of the symbol. Property 2 states that t n B so it follows from 6 that t n Bfor some finite constant B. Therefore J B. The crux of the proof is showing that there exists a constant C positive constants D D and a constant 0
+
+The proof of 33 is outlined in Lemma 1 in the proof of Lemmas given below. Here 33 is used to complete the proof of the theorem. From 32 Jcan be expressed as
+
+and there exists an integer h 1 such that for each positive integer p h the sequence transition matrices Sand Ssatisfy
+
+Corollary 2 Under the assumptions of Theorem 2 I is bounded in probability for all L 1 and for each satisfying 0
+
+Proof of Theorem 2 The proof is identical to that of Theorem 1. Replacing t n and t n with s n and s n respectively the crux of the proof is showing that there exists a constant C positive constants E E and a constant 0
+
+Matrices A A S and Swhich can be used with the successive requantizer to generate quantized sequences and satisfy the conditions of Theorems 1 and 2 for h 3 and h 5 are presented are provided as an example.
+
+The vector given by V Vtis equal to b where b 0 1 and 0 for p 1 2 and 3 respectively which is of the form required by Theorem 1. To show exponential convergence consider
+
+where is the lnorm and p 1 2 or 3. Evaluating t for p 3 and A V V yields square root over 130 and square root over 2 respectively therefore the right side of 49 is equal to square root over 260 50 
+
+By inspection of 47 does not converge however it is sufficient to show that the vector V Vtconverges. Consider A V V V Vwhere
+
+Multiplying V Vby tfor p 1 2 or 3 results in a vector with all zero elements for all n 1. Therefore for all n 1 and p 1 2 or 3 At V Vt. By inspection converges to
+
+The vector given by V Vtis equal to b where b 0 1 and 0 for p 1 2 and 3 respectively. Replacing A V and Vin 49 with A V and Vrespectively shows that At b converges exponentially to b. Therefore the state transition matrices given by 42 satisfy the conditions of Theorem 1 for h 3.
+
+Using the decomposition in 46 and 47 and the sequence transition matrices given by 44 it can be shown by direct computation that ASs ASs ASsand ASsconverges to c where c 0 1.5 0 6 and 0 for p 1 2 3 4 and 5 respectively. Furthermore the convergence of each vector at index n can be bounded using 49 replacing t alternately with Ss and Ss which implies that the convergence of ASs ASs ASsand ASsare exponential. Therefore the matrices A. A S and Sgiven in 42 and 44 also satisfy the conditions of Theorem 2 for h 5.
+
+Lemma 1 Suppose the conditions of Theorem 1 are satisfied. Then there exists a constant C positive constants D D and a constant 0
+
+where pand qare positive integers less than or equal to p. It thus suffices to establish a bound for Q n n of the form . 56 
+
+Since t n n 0 1 . . . is a Markov process for any given parity sequence o n o n 0 1 . . . where o 0 1 it follows from 20 and 21 that the m step state transition matrix corresponding to t n from time n to time n m can be written as
+
+By definition y m 2 or m y m 2 depending on the given parity sequence. It follows from the exponential convergence of 30 that there exists positive numbers Cand Cpositive numbers and and less than unity such that each element of At b1 62 
+
+Since the elements of the vectors in 62 and 63 are exponentially bounded the same must be true for the vectors in 64 and 65 . From 61 it follows that the right side of either 64 or 65 is equal to A n m t b1. 66 
+
+Therefore in general each element of 66 has a magnitude less than C where C maxC C and max which implies that 1 67 
+
+as m uniformly in n where the convergence is also exponential. This result is independent of the given deterministic sequence o n 0 1 . . . so it implies that 1 68 
+
+Thus the inner conditional expectation in 58 converges exponentially to bas n n with probability one so that
+
+Lemma 2 Suppose the conditions of Theorem 2 are satisfied. Then there exists a constant C positive constants E E and a constant 0
+
+Proof of Lemma 2 The proof is similar to that of Lemma 1 so only the non trivial differences with respect to the proof of Lemma 1 are presented.
+
+almost surely as m uniformly in n where the convergence is also exponential. With this result and s n c and 24 playing the roles of t n b and 19 in the proof of Lemma 1 respectively the proof of Lemma 2 is almost identical that of Lemma 1. Therefore it is sufficient to prove 76 .
+
+Since the random variables t n 1 and o n are statistically independent for any given parity sequence o n o n 0 1 . . . where o 0 1 it follows from 25 26 and 60 that 1 1 77 
+
+where i is the row index and j is the column index. By similar reasoning to that used in the proof of Lemma 1 37 and 38 together imply that there exists a positive number D and a positive number less than unity such that each element of the vector S n m 1 s c1 79 
+
+as m uniformly in n where the convergence is also exponential. This result is independent of the given deterministic sequence od n n 0 1 . . . so it implies that 76 holds almost surely as m uniformly in n where the convergence is also exponential.
+
+While specific embodiments of the present invention have been shown and described it should be understood that other modifications substitutions and alternatives are apparent to one of ordinary skill in the art. Such modifications substitutions and alternatives can be made without departing from the spirit and scope of the invention which should be determined from the appended claims.
+

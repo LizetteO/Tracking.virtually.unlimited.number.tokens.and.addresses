@@ -1,0 +1,33 @@
+---
+
+title: Systems and methods for alerting to traffic proximity in the airport environment
+abstract: Systems and methods for alerting to traffic proximity in the airport environment. Knowledge of the geographic position, speed, rate of change of speed, heading (or track-angle) and/or altitude of own-aircraft (or vehicle) and another, potentially conflicting aircraft (or vehicle) are used to calculate a predicted distance between the two aircraft (or vehicles) at given point of time in the future. If separation distance is predicted to be less than a predetermined acceptable value, then an alert message (aural, visual or both) is issued to the pilot or operator of the vehicle.
+url: http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PALL&S1=08040259&OS=08040259&RS=08040259
+owner: Honeywell International Inc.
+number: 08040259
+owner_city: Morristown
+owner_country: US
+publication_date: 20091123
+---
+The invention described herein was made in the performance of work under FAA Agreement DTFAWA 09 00001. The Government may have rights to portions of this invention.
+
+Several collision accidents have occurred at airports where an aircraft or vehicle has entered a runway environment which is already occupied by another aircraft that is moving at significant speed. Airborne collision protection and mitigation is provided by Traffic Collision and Avoidance System TCAS however the algorithms used in TCAS systems are not well suited to the airport surface operations problem on airports near runways aircraft commonly operate at relatively high speeds in close proximity to other aircraft and vehicles. For example an aircraft waiting to enter a runway is commonly stopped within a distance of the order of 100 feet from a runway that may be occupied by a landing aircraft traveling at speeds greater than 100 knots thereby confusing TCAS algorithms. Also on the ground at normal taxi speeds an airplane can change its direction of travel much more rapidly than can an airborne aircraft.
+
+The present invention uses knowledge of the geographic position speed rate of change of speed heading or track angle and or altitude of own aircraft or vehicle and another potentially conflicting aircraft or vehicle to calculate the predicted distance between the two aircraft or vehicles at given point of time in the future. If separation distance is predicted to be less than a predetermined acceptable value then an alert message aural visual or both is issued to the pilot or operator of the vehicle. The required information from the potentially conflicting traffic is obtained over a data communication channel such as Automatic Dependent Surveillance Broadcast ADS B Automatic Dependent Surveillance Rebroadcast ADS R or Traffic Information Service Broadcast TISB data. The information required from own aircraft is readily available from on board systems such as Global Positioning Systems and Air Data Systems.
+
+The processor sends and receives state information over a data channel via the transponder . Using own vehicle information from the GPS and the ADS and target vehicle state information position velocity acceleration and track angle the processor calculates predicted range between the two vehicles for a set of future times. If the predicted range is less than a pre determined allowable miss distance at a time less than Tw then a Warning alert is generated and outputted to one of the output device s . If the predicted range is less than the allowable miss distance at a time less than Tc then a Caution alert is generated and outputted to one of the output device s .
+
+The processor provides predictions for many scenarios i.e. for converging runway traffic as well as same runway traffic. However to avoid missed alerts when either own vehicle or the target vehicle is changing track angle rapidly which happens on the ground the predicted positions are calculated at a set of future times e.g. every three seconds out to 30 seconds i.e. 10 calculations. This frequency can vary. Also the accelerations rate of change of speed of own vehicle and target vehicle are used to provide more accurate predictions. Acceleration of the target vehicle is calculated from reported velocity or geographic position and filtered to reduce noise.
+
+In another embodiment the processor uses track angle data from own vehicle and traffic vehicle to calculate track angle rate to improve the prediction of position when own vehicle and or target vehicle is turning. Since the relative positions of the own vehicle and the traffic vehicle are known the direction from which the target vehicle is converging is also calculated and the direction can be included in the alert message e.g. Traffic left or Traffic 9 o clock .
+
+At a decision block the processor determines if one of the determined distances between corresponding times is below a predefined threshold. If one of the determined distances is below the threshold then at decision block the processor determines if the time corresponding to the determined distance is below a first time threshold. If the corresponding time is below the first time threshold the system outputs a warning alert see block . If none of the determined distances are below the predefined threshold the process is delayed at block and returned to block .
+
+If the corresponding time is not below the first time threshold then at decision block the processor determines if the time corresponding to the determined distance is between the first time threshold and a second time threshold. If the corresponding time is not between the first and second time threshold the process is delayed at block then returned to decision block . If the corresponding time is between the first and second time threshold the system outputs a caution alert at block .
+
+If Tis not less than or equal to TCaution or the target is not inside the proximity zone then the process proceeds to analyze the next target aircraft vehicle based on observed ADS B traffic targets.
+
+Where AvgAccelis the average acceleration in the Ktime interval N is the number of averaging samples Vis the velocity at the isample before the current time interval Vis the velocity at the i 1 sample before the current time interval and dT is the time step used in the calculations typically 1 second .
+
+While the preferred embodiment of the invention has been illustrated and described as noted above many changes can be made without departing from the spirit and scope of the invention. Accordingly the scope of the invention is not limited by the disclosure of the preferred embodiment. Instead the invention should be determined entirely by reference to the claims that follow.
+

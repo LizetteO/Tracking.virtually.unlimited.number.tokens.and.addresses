@@ -1,0 +1,89 @@
+---
+
+title: Rapid auto-calibrated parallel reconstruction using synthetic target coil
+abstract: In a rapid auto-calibrated partially parallel reconstruction method, the unaliasing process is approached by convolution. The image combination is performed on a low-resolution image matrix before unaliasing, and the unaliasing process is effectively performed once for a single synthetic target coil instead of for each individual coil.
+url: http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PALL&S1=08026720&OS=08026720&RS=08026720
+owner: 
+number: 08026720
+owner_city: 
+owner_country: 
+publication_date: 20090325
+---
+The present application claims the benefit of U.S. Provisional Application No. 61 039 240 filed Mar. 25 2008 whose disclosure is hereby incorporated by reference in its entirety into the present disclosure.
+
+This invention was made with government support under Contract No. HL079110 awarded by the National Institutes of Health. The government has certain rights in the invention.
+
+The present invention is directed to image reconstruction and more particularly to image reconstruction by generating an unaliased data set corresponding to a synthetic i.e. virtual coil.
+
+Parallel imaging revolutionizes data acquisition in magnetic resonance imaging. SENSE is a well known image domain based parallel reconstruction method which is optimum in terms of SNR of the reconstructed image. However SENSE requires knowledge of accurate RF coil sensitivity maps. Artifacts can appear if the estimated sensitivity profile is wrong.
+
+GRAPPA is a coil by coil autocalibrated parallel reconstruction method. It has been shown that GRAPPA can achieve good image quality and suppress residual aliasing artifacts even when coil sensitivity profiles are difficult to acquire.
+
+Parallel imaging can also be combined with non Cartesian k space sampling to achieve further scan time reduction or reduce image artifacts. Iterative SENSE reconstruction is effective in non Cartesian parallel imaging but computation and memory intensive. GRAPPA has also been extended to non Cartesian parallel imaging. These methods inherit the advantages of GRAPPA in Cartesian k space sampling. Recently Hu et al reported a GRAPPA type autocalibrated partially parallel reconstruction method termed BOSCO which was successfully applied to spiral parallel imaging. BOSCO is described in U.S. patent application Ser. No. 11 785 734 filed Apr. 19 2007 whose disclosure is hereby incorporated by reference in its entirety into the present disclosure. Similarly to GRAPPA the unaliasing process in BOSCO is also carried out as a convolution operation. This process is performed coil by coil and the final image is the combination of the unaliased coil images.
+
+The coil by coil reconstruction was proposed in original GRAPPA largely because of its greater robustness to the phase cancellation problem compared to single coil autocalibrated approaches. However coil by coil reconstruction has a computational disadvantage when a large number of coils are used for parallel imaging since its reconstruction time grows as a square of the number of coils. Recently the advance of hardware has permitted the application of large coil arrays having up to 128 receiver channels for improved performance of parallel imaging. The problem of computational load and memory limitations in image reconstruction due to the increased number of receiver channels has emerged.
+
+It is therefore an object of the invention to address the problem of computational and memory limitations in image reconstruction due to the increased number of receiver channels.
+
+To achieve the above and other objects the present invention is directed to a new rapid auto calibrated partially parallel reconstruction method. Similarly to GRAPPA type reconstruction methods the unaliasing process is performed by convolution. However the image combination can be performed on a low resolution image matrix before unaliasing and the unaliasing process can be effectively performed once for a single synthetic target coil instead of for each individual coil which results in significant computation reduction when a large number of receiver channels are used for data acquisition. Throughout the present specification low resolution should be construed to mean having a lower resolution than the image to be ultimately generated.
+
+Compared to the existing partially parallel reconstruction methods the main advantage of the present invention is its computational efficiency when a large number of receiver channels are used for data acquisition. In the present invention the image combination is performed rapidly on a small matrix prior to the training and the unaliasing process and the training and the unaliasing convolution only need to be performed once. By contrast in GRAPPA and BOSCO the training and the unaliasing process are performed for each individual component coil and the final image combination is performed on a full resolution matrix size.
+
+Currently a major limitation to non Cartesian parallel imaging is its computational and memory intensity. BOSCO is a non iterative k space based non Cartesian parallel imaging method. Therefore it has a significant computational advantage compared to the iterative reconstruction methods such as SENSE. However the computational load of BOSCO is proportional to the number of receiver channels used for data acquisition. With the tendency to increase receiver channels in MRI systems for parallel imaging BOSCO can become impractical for certain applications when computational time is critical such as non Cartesian real time imaging without installing dedicated computational hardware. The present invention is expected to be a useful tool in such applications.
+
+GRAPPA is an extension of AUTO SMASH and VD AUTO SMASH. In AUTO SMASH and VD AUTO SMASH as well as the original SMASH technique composite fully sampled low frequency k space lines are formed for the data fitting. These composite k space lines are usually the simple sum of the auto calibration signal ACS lines acquired in each coil with phase calibration prior to summation which results in problems of SNR degradation and phase cancellation in reconstructed images. In GRAPPA this problem is addressed by performing unaliasing on each coil and forming the final image by combining individual unaliased coil images. By contrast in the present invention the problem is approached by forming a composite full FOV image prior to the unaliasing process and the unaliasing is performed on a single synthetic virtual coil.
+
+The unaliasing process in the present invention can be performed either in the image domain or the k space domain. When performed in the image domain the present invention can be combined with RIB reconstruction for region by region parallel reconstruction which provides the advantage to optimize the reconstruction within an arbitrary region in image space. A certain choice of the basis functions and the size of region of interest can have advantages in particular applications. A preferred embodiment is disclosed herein using Fourier harmonics as basis function and full FOV as the region of interest when performing the process in the image domain.
+
+The present invention provides a rapid partially parallel reconstruction method for arbitrary k space trajectories. This method is based on the principle that the unaliasing process in parallel imaging can be carried out by convolution with small kernels in k space as demonstrated by GRAPPA for Cartesian k space sampling and BOSCO for non Cartesian k space sampling. In contrast to GRAPPA and BOSCO in the present invention the image combination is performed before the unaliasing process on a low resolution image matrix and the unaliasing is performed only for a single synthetic target coil which renders a significant computational advantage when a large number of receiver channels are used for data acquisition.
+
+A preferred embodiment of the present invention will be set forth in detail with reference to the drawings in which like reference numerals refer to like elements or method steps throughout.
+
+The original GRAPPA reconstruction method reconstructs the missing k space lines by a linear combination of the neighboring acquired lines. Mathematically this reconstruction process can be viewed as a convolution in k space. Consequently the unaliasing process for an individual coil can be expressed as 
+
+where Nis the number of coils M k is the k space data of the jth coil after unaliasing tilde over M k is the under sampled k space data for the ith coil and H k are the convolution kernels which usually have a small matrix size. In the original GRAPPA reconstruction the center element of these convolution kernels is constrained to be 1.
+
+Based on Fourier transform theory a convolution in k space is equivalent to a multiplication in the image domain. Therefore we can describe GRAPPA in the image domain as follows 
+
+where m r is the unaliased image of the jth coil tilde over m r is the aliased image of the ith coil and h r are spatial weighting functions which are the Fourier transform of the convolution kernels. Since the convolution kernels usually consist only of low frequency components these weighting functions are smooth in the spatial domain.
+
+After the unaliasing process the final composite image can be formed using conventional phased array reconstruction methods. Typically the reconstruction process can be expressed as a pixel by pixel linear combination of individual coil images 
+
+where w r are the smooth spatial weighting coefficients for the jth coil and w r are their conjugates. To maximize the SNR in the resulting image the vector of weighting coefficients w w w . . . w at each pixel is given by w Rc 4 
+
+where the vector c c c . . . c is the sensitivity map at that pixel Ris the N Ncoil correlation matrix and is an optional scaling vector at that pixel location.
+
+Eq. 4 involves the calculation of the sensitivity maps. A number of methods are available for calculating sensitivity maps from fully sampled low frequency k space. In certain applications the actual coil sensitivity can be difficult to determine. In one known adaptive reconstruction method for SNR optimization in phased array imaging without knowing the actual coil sensitivity the array measurement is considered to consist of a desired stochastic signal process and an undesired stochastic noise process. The array correlation matrix for the signal process and noise process is estimated by averaging measured individual image cross products over a local region 
+
+where m r i 1 2 . . . Nare individual coil images and SROI and NROI are specified sets of pixel coordinates for estimating Rand R respectively.
+
+To reconstruct the final composite image the array combination coefficients w w w . . . w are calculated as the eigenvectors corresponding to the maximum eigenvalue of P RR 7 
+
+The coefficients may have rapid phase variations. In order to generate smooth combination coefficients we can modulate the phase of all the coils by the phase of a single coil of the array.
+
+Since both w r and hvary slowly in space the weighting function u r should also be smooth in space which corresponds to small kernels in k space.
+
+Eq. 8 indicates that the final full FOV field of view composite image is a linear combination of aliased coil images. To determine the weighting coefficients additional auto calibration signal ACS lines are collected as in the original GRAPPA and the other auto calibrating parallel imaging methods. The weighting coefficients can be determined either in k space or in image space based on the minimization of a least square norm. In the image domain this least square norm can be expressed as 
+
+where m r is a composite full FOV low resolution image and tilde over m r are aliased low resolution images from each individual coil. m r can be reconstructed by combining full FOV low resolution coil images based on Eq. 3 . Regularization can be added to Eq. 10 to increase the SNR of the final reconstructed image with a tradeoff of increased aliasing energy.
+
+When solving Eq. 10 in the image domain we can express the weighting functions u r as linear combinations of a finite number of orthogonal basis functions 
+
+where f r k 1 2 . . . K defines a set of basis functions k 1 2 . . . K are the unknown coefficients for the ith coil and Kis the number of unknowns from one coil. Since the weighting function is smooth only low order basis functions and a few unknowns are needed during image reconstruction. Various basis functions can be used in Eq. 11 examples of such basis functions are used in the above noted BOSCO.
+
+The convolution model of GRAPPA reconstruction works well for Cartesian partially parallel imaging. When data is sampled along Cartesian trajectories in k space the shift and direction between the missing lines and the acquired ACS lines are consistent throughout k space. Therefore the weighting coefficients estimated from the low frequency region can be applied for reconstructing missing lines in the high frequency region. When data is acquired along non Cartesian trajectories in k space however this geometric consistency of the k space sampling pattern does not exist anymore. Consequently it is not straightforward to apply the GRAPPA convolution process for non Cartesian partially parallel imaging.
+
+In the above noted. BOSCO it has been demonstrated that it is possible to reconstruct the unaliased image using the convolution model described in Eq. 1 with small and non constrained convolution kernels after gridding the k space data onto Cartesian grids. Based on BOSCO theory we can derive the same reconstruction process for non Cartesian partially parallel imaging after the k space data are interpolated onto Cartesian grids using gridding. Similarly to GRAPPA BOSCO is a coil by coil reconstruction method where unaliasing is performed on each coil and the final image is the combination of unaliased coil images. The preferred embodiment therefore has significant computational advantages compared to BOSCO when a large number of coils are used for non Cartesian parallel imaging which is valuable when fast image reconstruction is necessary such as for real time imaging.
+
+The full FOV composite image can be formed as a linear combination of aliased component coil images as shown in Eq. 3 . One concern of the present invention is whether the coefficients estimated using the low resolution images from training process can also be applied to form the final high resolution full FOV composite image. This is true if the following assumptions are satisfied a the weighting coefficients given in Eq. 3 are smooth in space and b the weighting coefficients given by Eq. 9 are smooth in space. Assumption a is valid since these coefficients generally reflect the sensitivity profiles which are smooth in space. Assumption b generally is valid since these coefficients reflect the product of two smooth functions in space.
+
+Experimental results will now be described. The data sets were acquired from a Siemens 1.5 T Avanto scanner. For Cartesian acquisitions the data sets were acquired using a turbo spin echo TSE sequence. Data sets were acquired using 2 and 4 acceleration factors with 26 33 and 35 ACS lines respectively. The preferred embodiment has also been tested for spiral parallel reconstruction. The technique has been applied for both dual density spiral and constant density spiral acquisitions. For dual density spiral acquisition the center region of k space is fully sampled and the outer region is under sampled. The fully sampled center region is used as the training target. For constant density spiral acquisition full FOV data sets are acquired and spiral interleaves are decimated to simulate various acceleration factors. The center of k space is kept fully sampled for constant density spiral and used as the training target.
+
+We compared the preferred embodiment to BOSCO reconstruction. Both algorithms were implemented in Matlab MathWorks Inc. Natick Mass. . The final high resolution composite images were reconstructed into a 512 512 image matrix. For Cartesian sampling the size of the training matrix was the number of ACS lines times 512. For non Cartesian sampling the training data sets were gridded to 64 by 64 for the training process.
+
+The images reconstructed by the preferred embodiment and BOSCO are comparable. Aliasing artifacts become obvious at 4 acceleration for this example.
+
+The images reconstructed by the preferred embodiment and BOSCO are comparable quality in terms of SNR and aliasing artifact reduction and the preferred embodiment achieves considerable computational acceleration. Both methods remove aliasing artifacts successfully. Compared to the phantom example the residual aliasing artifacts after unaliasing process are less obvious for this example at 4 acceleration. We also include the image reconstructed using GRAPPA provided by commercial Siemens scanner. These images are exported directly from the scanner computer. The difference between these images and the images we reconstructed using the preferred embodiment and BOSCO can be caused by the additional image processing provided by the Siemens scanner.
+
+While a preferred embodiment has been set forth in detail above those skilled in the art who have reviewed the present disclosure will readily appreciate that other embodiments can be realized within the scope of the present invention. For example numerical values are illustrative rather than limiting as are recitations of specific hardware. Other variations have been noted above. Therefore the present invention should be construed as limited only by the appended claims.
+

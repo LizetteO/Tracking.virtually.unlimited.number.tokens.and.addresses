@@ -1,0 +1,197 @@
+---
+
+title: Computer-implemented method of design of surfaces defined by guiding curves
+abstract: A computer-implemented method of design of ruled surfaces may comprise the step of accessing data defining guiding curves P(u) and Q(v) and a cost function ƒ(t,w). Given P(u) and Q(v), the unknown coupling is a parameterized curve s(t(s),w(s)). The method further comprises defining an objective function of the type J=J(ƒ,t,w), involving both ƒ(t,w) and coordinates t, w of the coupling curve. Then, optimizing the objective function J makes it possible to obtain the target coupling curve. Finally, a ruled surface S(s,λ)=λQ(w(s))+(1−λ)P(t(s))is provided, according to the guiding curves P(t(s)) and Q(w(s)), composed with the coordinates t,w of the coupling curve previously obtained. In addition, the objective function is further constrained at the optimization step such that arguments t,w of the cost function ƒ(t,w) are regulated by a regulation function μ.
+url: http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PALL&S1=08332189&OS=08332189&RS=08332189
+owner: Dassault Systemes
+number: 08332189
+owner_city: Velizy-Villacoublay
+owner_country: FR
+publication_date: 20090619
+---
+This application claims priority under 35 U.S.C. 119 or 365 to European Application No. 08290659.5 filed Jul. 4 2008.
+
+The invention relates to the field of computers programs and systems and more specifically to the field of computer aided design CAD manufacturing CAM and engineering CAE systems.
+
+A number of systems and programs are offered on the market for the design of parts assemblies of parts and products thereof such as the one provided by Dassault Syst mes under the trademark CATIA Computer Aided Three Dimensional Interactive Application . CATIA is a multi platform CAD CAM CAE software suite commonly referred to as a 3D Product Lifecycle Management software suite. It supports multiple stages of product development CAx ranging from conceptualization through design CAD and manufacturing CAM until analysis CAE . This software suite is customizable via application programming interfaces API . Some versions can be adapted in various programming languages under dedicated APIs.
+
+These so called CAD systems notably allow a user to construct and manipulate complex three dimensional 3D models of objects or assemblies of objects. CAD systems thus provide a representation of modeled objects using edges or lines in certain cases with faces. These CAD systems manage parts or assemblies of parts as modeled objects which are mainly specifications of geometry. In particular CAD files contain specifications from which geometry is generated. From geometry a representation is generated. Specifications geometry and representation may be stored in a single CAD file or multiple ones. CAD systems include graphic tools for representing the modeled objects to the designers these tools are dedicated to the display of complex objects the typical size of a file representing an object in a CAD system extending up to the range of a Mega byte for part and an assembly may comprise thousands of parts. A CAD system manages models of objects which are stored in electronic files.
+
+Designing a mechanical part with a known CAD system can be seen as defining the geometrical shape and dimensions of said part so as to fit functional and manufacturing requirements. Mainly the resulting shape is a combination of basic features such as pad pocket groove shaft etc. created by the designer. Through complex geometrical and topological computations the CAD system yields the boundary representation of the solid mechanical part as e.g. a closed and oriented surface.
+
+Other basic elements may form the shape of a part or a product amongst which are the ruled surfaces. Ruled surface design may be part of a computer aided geometric design system. Rigorously in geometry a surface S is ruled if through every point of S there is a straight line that lies on S. Celebrated examples are the plane and the curved surface of a cylinder or cone. A ruled surface can accordingly be visualized as the surface formed by moving a line segment i.e. a straight line in space. For example a cone is formed by keeping one end point of a line fixed whilst moving the other end point in a circle. The line segment motion is for instance governed by two guiding curves e.g. defined by the user so that the end points of the line segment move along each guiding curve.
+
+Ruled surfaces are often used in tooling design e.g. casting flash zone of forging dies cutting tool for forged part as well as shape design e.g. chamfer in mechanical part design tilted surface in architecture .
+
+Developable surfaces which can be unfolded into a plane without deformation are known as a special case of ruled surfaces incorporating an extra constraint of developability in addition to the above characteristics of a ruled surface.
+
+Developable surfaces are used in the design of objects which must be manufactured from flat sheets of a quasi inextensible material such that the material is only folded to fit the shape. Many man made objects such as luxury handbags made of leather certain buildings and individual plates for ship hulls are designed in this manner.
+
+Several computational methods and algorithms related to ruled surface design are known in the art. A main problem is to conveniently couple the two guiding curves. There is an infinity of ways to connect the two input guiding curves by moving a line segment. The coupling strategy is thus a key feature of ruled surface design. Two coupling technologies are used.
+
+The first one is the implicit coupling wherein broadly the CAD system is in charge of the coupling strategy. The CAD system runs an algorithm embedding a cost function so that the ruled surface is computed as the solution of an optimization problem and in particular a cost minimization problem. The cost function may capture physical properties like minimal surface area maximal developability minimal bending energy minimal mean curvature variation or minimal normal variation. Furthermore the cost function may linearly combine several of such criteria. In addition a dedicated coupling function or equivalently a corresponding coupling curve captures how each point of the first guiding curve is connected to a point of the other guiding curve.
+
+The coupling function is involved in the cost function together with the geometrical definition of the guiding curves. A basic property of the coupling function is to be monotonous. Otherwise the resulting surface is singular folded or pinched which makes the surface unusable in any further geometrical processing. A typical reference about implicit coupling is Optimal boundary triangulations of an interpolating ruled surface C. C. L Wang K. Tang Journal of Computing and Information Science in Engineering Vol. 5 2005.
+
+In addition a local repair may occur. The corresponding technology is the following. A user lets the CAD system compute a ruled surface through its own implicit coupling strategy. Generally the resulting surface is not satisfactory. Then thanks to an interactive toolkit the user removes by hand the bad portions of surface and fills the gap with a fill surface. Notice that the fill surface is defined by boundary and tangency conditions it is not a ruled surface.
+
+A second technology known is the explicit coupling . Here the CAD system user is in charge of the coupling strategy. The CAD system asks the user to select points on a guiding curve and to select the corresponding points on the other guiding curve. The number of connected points is the user s choice. This results in a finite set of coupled points connected by line segments. Then the CAD system fills the empty space between consecutive coupling segments using a known interpolation strategy.
+
+The known methods of implicit coupling may further make use of a numerical optimization algorithm. The scientific literature provides a large number of such algorithms.
+
+For example implicit coupling methods involve a cost function driven or inspired by physical properties or the like. Illustrated in as from the paper of Wang and Tang cited above two ruled surfaces obtained from the same guiding curves through different physical criteria . Notice the bad quality of surface due to local concentration of line segments. Thus the quality of resulting surfaces must be improved.
+
+Explicit coupling is the responsibility of the mechanical CAD user. The first drawback of this technology is that a human operator cannot deal with hundreds of coupling segments connecting two guiding curves. A few dozens is a reasonable limit which restricts the designing scope. Next drawback is that the coupling has to be redefined or updated each time a guiding curve is modified. Even if the CAD system is history based meaning that points initially defined on a curve are automatically redefined on the modified curve there is no guarantee that the updated coupling plugged on the updated guiding curves provides a correct ruled surface. Consequently the user has to check the modified surface and in many cases has to rework the coupling. The last drawback of explicit coupling is that it never works at first shot. It is improved by the user through a tedious try and error iterative process. Furthermore this try and error process is potentially required each time a guiding curve is modified.
+
+Finally the methods involving local repair are essentially a manual procedure. It relies on the ability of the user to see where the ruled surface is not correct. A very small singularity can be missed. Obviously the local repair of an initial ruled surface is not suited to the modified ruled surface. Once more local repair process has to be redone each time a guiding curve is modified.
+
+In a few words existing technology provides solutions that result in a bad quality output or a time consuming design process.
+
+In addition the underlying algorithms of implicit coupling often fail especially in the case of involved guiding curves. Their robustness is therefore questionable.
+
+Accordingly the present invention aims at improving the robustness of computer implemented methods of design of ruled surfaces. Preferably the solution should improve the quality of surfaces output and if possible generalize to any surface defined by coupling two guiding curves.
+
+To achieve this the present invention proposes a computer implemented method of design of a surface defined by guiding curves P u and Q v and a coupling curve s t s w s for improving the manufacture of products modeled by such a surface the method comprising 
+
+In given embodiments the process according to the invention may comprise one or more of the following features 
+
+at the step of optimizing the objective function the objective function is constrained such that the derivatives involved in the regulation function are both positive whereby an increasing coupling curve is implemented 
+
+The present description is structured as follows. First the present invention and preferred embodiments thereof are described broadly. Then the overall process is described step by step. Finally details of the preferred embodiments are investigated.
+
+In a few words the present invention relates to a method of design of ruled surfaces based on a scheme of implicit coupling. According to the invention the objective function J J t w is constrained such that arguments t w of the cost function t w are regulated by a regulation function . Thus a regulation function is here involved in addition to the cost function. The regulation function acts on the arguments t w of the cost function t w . More exactly the function regulates the said arguments during the optimization just as an anti lock brake controller regulates the rotational speed of the wheels of a car. Similarly the function regulates the said arguments in that it typically acts on the speed i.e. the first derivative thereof. Hence the objective function is further constrained according to a non geometrical criterion.
+
+The robustness of the underlying algorithm is thereby improved as shall be illustrated in various examples below. All the more results obtained are more meaningful to the user and the quality of surfaces returned by the design system is improved. In contrast a usual implicit coupling algorithm is likely to get poorly meaningful results governed by the geometry only. Interestingly the present method can be generalized to any surface defined by coupling two guiding curves. In fact the present inventors have realized that drawbacks of existing methods of implicit coupling arise due to a weakness of the optimization algorithm. In particular they have realized that the level of constraints of the objective function to optimize is not sufficient to ensure a robust optimization and meaningful results. Moreover they have understood that the physical like criteria involved in the cost function do not suffice to secure the optimization algorithm. While taking some criteria is unavoidable to cope with the infinity of coupling solutions the present inventors have then realized that the required criteria should extend beyond the usual physical criteria. This contrasts with a number of prior art approaches wherein physical criteria have systematically been developed to improve the final surfaces or the robustness of the implicit coupling algorithm.
+
+Relying instead on a regulation function to further constrain the optimization process turns out all the more convenient since physical properties are not particularly significant to the mechanical designer besides the developability as discussed below . Indeed the expectation of the designer is ease of use performance and robustness. None of these criteria is captured by a physical like property whereas the regulation function at stake secures the underlying optimization algorithm.
+
+As said perhaps the sole physical property that really deals with the ruled property is the developability . However given two arbitrary guiding curves there exists generally no developable surface to connect them. And even if locally a developable surface exists it is not always regular everywhere. Accordingly a physical like cost function can be concluded not to satisfy the mechanical CAD user expectation.
+
+First the cost function can be augmented by the above regulation function hence yielding an effective cost function that can be adjusted to fit one or more of the following goals user s expectation numerical evaluation performance parallelizable algorithm robustness. As opposed to background art the resulting effective cost function is not driven by physical properties only possibly no physical property at all.
+
+It is for example designed to provide a smooth surface in the following sense. On one hand the line segments of the resulting surface are harmoniously arranged all along the way. This can be captured through the effective cost function itself or the regulation function . Now a principle of the invention is to take advantage of the flexibility provided by the above specification of harmoniously arranged line segments. Within this range of freedom the effective cost function can be designed as well to perform efficiently during the numerical solving step. This allows a robust solving algorithm well suited to the arbitrary complexity of guiding curves.
+
+On the other hand the tangent plane can be everywhere defined by evaluating first order partial derivatives. This can further be captured by imposing a strictly increasing coupling curve.
+
+In addition and as shall be described in details the effective cost function can be adapted to parallel processing. For example the Particle Swarm Optimization PSO algorithm turns out to be particularly well suited to the problem as posed. It is able to overcome a local solution trap and converge toward a far and better solution. The PSO algorithm is also trivial to parallelize because it executes a large number of simultaneous and independent evaluations of the cost function. The reader may for example refer to Swarm Intelligence Focus on Ant and Particle Swarm Optimization edited by Felix T.S. Chan and Manoj Kumar Tiwari Publisher I Tech Education and Publishing Vienna Austria December 2007.
+
+Before turning to details of the preferred embodiments the overall process is briefly described in reference to .
+
+The method of the invention comprises a step S S of accessing data defining guiding curves P u and Q v step S and a cost function t w step S . Given the user selected guiding curves P u and Q v the unknown coupling is a parameterized curve s t s w s which could else be defined as a function instead of a curve. A cost function t w defines as known a relevant characteristic modeling the quality of the ruled surface. This characteristic is closely related to the guiding curves geometry.
+
+The method further comprises defining step S an objective function of the type J J t w as known involving both the cost function t w and coordinates t w of the coupling curve s t s w s .
+
+Then optimizing at step S the objective function J according to the optimization problem posed see e.g. the problem as posed at S makes it possible to obtain the target coupling curve s t s w s step S. As said different optimization algorithms can be contemplated. The choice of the PSO algorithm will be described in details later.
+
+Finally a ruled surface S s Q w s 1 P t s is provided step S according to the guiding curves P t s and Q w s . Note that the guiding curves P u and Q v are actually composed with the coordinates t w of the coupling curve previously obtained.
+
+What has been just described is merely an implicit coupling scheme. Now as noted above and according to the invention the objective function J J t w is further constrained S S such that arguments t w of the cost function t w are regulated by a regulation function . Obviously since two arguments are involved each of the arguments are likely to be regulated independently by the regulation function. Said regulation function is for instance accessed through relevant data at step S e.g. together or parallel with steps S S.
+
+In contrast with the cost function t w as long as is devoted to the regulation of arguments involved in the cost function is independent of the guiding curves. A simple and practical way of achieving this is to make the regulation function depend on derivatives of arguments t w. Hence t w is independent of the guiding curves. Similarly and as noted earlier an anti lock brake controller measures and regulates rotational speed of car wheels it does not directly depend on the conformation of the road. Other examples could help in understanding the present invention. For instance we may somehow compare the present context with that of a skater willing to skate a double rail structure with each of his her skates engaged in respective guiding rails of the structure each being comparable here to a guiding curve . One can easily grasp the potential difficulty of the exercise especially in the case of involved guiding rails. However the skater may realize that the difficulty could be partly overcome by regulating i.e. adapting by increasing or decreasing temporarily the speed of each of his her skates. Likewise the arguments of the cost function are likely to be regulated by the regulation function.
+
+Yet different ways of regulating arguments t w can be contemplated e.g. by locally confining arguments t w in a given interval. Making depend on derivatives is however more meaningful to the user and incidentally quite efficient on the computational side. Note that higher order derivatives could be involved in specific applications.
+
+Next implementation of t w is preferably such the objective function is independent from the parameterization of the cost function. This notably ensures invariance property of the objective function and contributes to improve the robustness of the underlying algorithm.
+
+In this regard various possibilities for constraining the objective function J J t w can be contemplated. Yet instead of implementing the constraint as an external constraint it is advantageous to implement the constraint implicitly that is internally to the objective function J. Accordingly the underlying algorithm and corresponding computational cost is not substantially impacted with respect to the prior art implicit coupling. A convenient example is an objective function J of the type 
+
+Now since the regulation function depend preferably on derivatives of arguments t w a suitable choice is to implement the objective function as J t w t w ds which actually amounts to consider an effective cost function t w t w involving both the usual cost function and function . The optimization problem is posed at step S.
+
+In particular the derivatives involved in the regulation function are preferably both positive whereby an increasing coupling curve is implemented. This shall be further discussed later.
+
+The next step S is to optimize e.g. minimize the objective function previously defined according to the problem posed. A suited optimization algorithm may provide an optimal coupling curve which in turns defines the output ruled surface.
+
+A first point relates to the coupling curve. In particular the following paragraphs aims at proving that if the coupling curve is not strictly increasing a singularity always occurs.
+
+In this respect the input guiding curves are P u u 0 1 and Q v v 0 1 as known in the art. They are typically smooth which means that P u 0 and Q v 0 for all u 0 1 and all v 0 1 . The unknown coupling curve s t s w s s 0 1 is a planar curve in the 0 1 0 1 space such that t 0 0 t 1 1 w 0 0 and w 1 1.
+
+As illustrated in for each value of parameter s 0 1 the coupling curve associates parameter values t s and w s which defines the line segment joining points P t s and Q w s . In other words the unknown ruled surface to be obtained is parameterized by
+
+It is important to understand how the variations of the coupling curve govern the regularity of the ruled surface.
+
+As a first example if the coupling curve oscillates then a folded surface results. In fact here the ruled surface is not injective meaning that there exists s and s such that s s and S s S s . Indeed since the coupling curve oscillates there exists s sand ssuch that t s t s t s tilde over t and distinct w s was illustrated in . Then S s Q w 1 P tilde over t so S s 0 P tilde over t for i 1 2 3 as expected. The same proof holds w s w s w s tilde over w and s tas illustrated in .
+
+The variations of the coupling curve may have other effects on the regularity of the ruled surface. As a second example if the coupling curve is monotone increasing but not strictly increasing a pinched surface results. A monotonous increasing coupling curve but not strictly increasing means that there is an isolated parameter value 0 1 such that w 0 as illustrated in . Then the vector product of the first order partial derivatives vanishes when s 1 that is S 1 S 1 0. Yet the limit normal vector
+
+Accordingly one understands why the coupling curve implemented is preferably a strictly increasing function.
+
+Similarly it may be realized that if the coupling curve is monotone increasing but not strictly increasing an isolated parameter value 0 1 exists such that t 0 see then the vector product of the first order partial derivatives vanishes when s 0 that is S 0 S 0 0. Nevertheless the limit normal vector
+
+A third example concerns non planar triangular ruled surfaces as exemplified in . Let P u u 0 1 be a parameterized 3D curve and Q a point not on curve P. The triangular surface is defined by S u v vQ 1 v P u . Then the tangent plane to surface S at point Q is not defined through first order partial derivatives that is S u 1 S u 1 0 for all u 0 1 . Furthermore it can be shown that this tangent plane does not exist unless curve P is fully included in a plane including point Q. This results in a singularity.
+
+Such a singularity occurs when the coupling curve is locally horizontal or locally vertical as illustrated in or B respectively note that the situation slightly differs compared with that of or B . If the coupling curve is locally horizontal or locally vertical then moving along the guiding curves one end of the line segment stops during a short period of time while the other end goes on moving.
+
+One can understand from the three investigations above that the coupling curve has preferably to be strictly increasing should it be to improve the quality of the ruled surface output. In particular it may be strictly increasing in the following sense t 0 and w 0. Else a singularity occurs making the surface more difficult to use in a further geometrical process. In this respect it may be noticed that a cone surface is developable but it features the non planar triangular ruled surface singularity which may cause rounding and filleting failure.
+
+To conclude on these brief investigations the objective function is preferably constrained such that the derivatives involved in the regulation function are both positive whereby a strictly increasing coupling curve is implemented. As a result this notably prevents obtaining folded pinched or non planar triangular surfaces.
+
+Next additional details are discussed as to the regulation function u v . Some of the following aspects are better understood in relation with the flowchart of .
+
+We have seen that as long as remains devoted to the regulation of arguments involved in the cost function is independent of the guiding curves. In addition this function is important inasmuch as it may be implemented so as to yield an invariance property with respect to reparameterization of the cost function which shall be detailed later. In particular opting for a choice of variables which naturally imposes the invariance helps the practical implementation it does not depend on the guiding curves . Accordingly choosing a suitable u v simplifies the numerical problem and accelerates the solving.
+
+Function u v is for instance chosen as a scalar function that is positively homogeneous. This property advantageously results in that the objective function when defined as
+
+Next not much has been said until now about the cost function. The cost function or t w is likely to capture the significant geometrical quantity. According to experiments carried out during the development of the present invention a very convenient function for a ruled surface is in practice defined as t w P t Q w . Notice that the input guiding curves play a symmetrical role so that the resulting ruled surface does not depend on a user selection order if any. Indeed reversing curves P and Q and reversing the coordinates of the coupling curve yields Q w P t that is the same value as P t Q w . This makes the ruled surface creation easier from the user point of view. In this respect referring back shortly to the flowchart of it is to be understood that the user selection if any of the input guiding curves occurs prior to steps S and S.
+
+Next in an embodiment the cost function may furthermore capture a developable criterion e.g. related to a developable surface if necessary. In this respect one has to keep in mind that this criterion is involved in the cost function only when explicitly required by the designer and that it must be combined with another smoothing criterion because the developable surface does generally not exist.
+
+As discussed earlier the objective function is defined as an integral of the product of functions and . By integral it is meant a number close to an area bound by said product it being understood that a discretization of said integral is obviously contemplated.
+
+As mentioned too function t w captures the geometry as known in the art. Function u v preferably involves the derivatives of the coupling curve t w in order to provide the invariance property as detailed later . Thus the objective function is defined as 
+
+As it can be realized from such a definition the shape of the resulting ruled surface depends on the shape of the coupling curve but not on how the coupling curve is parameterized. For this reason the objective function is invariant under re parameterization of the coupling curve. Formally this means that J t w J t w for any strictly increasing function mapping interval 0 1 onto itself This goal is for instance achieved thanks to a positively homogeneous function . Yet it can be shown that re parameterization invariance is captured without any more assumption about function .
+
+We now briefly revert to the concept of strictly increasing constraint. A straightforward translation of a strictly increasing coupling curve is that the derivatives are both strictly positive that is t s 0 and w s 0 for all s 0 1 . However it may be realized that a strict inequality does not define a correct constraint in an optimization problem. Rather a relevant constraint is greater that or equal to . Accordingly some threshold 0 is advantageous to handle how close to the horizontal or vertical direction the coupling curve can be.
+
+In addition a normalization can be introduced consistently with the fact that a direction is concerned. In this respect a particularly advantageous choice is to reuse the previously introduced function namely
+
+Accordingly at the step of optimizing the objective function the optimization is preferably constrained according to the above constraints wherein is a positive threshold.
+
+Moreover the regulation function is preferably implemented as a non Euclidian metric function for example as u v u v and this for reasons that shall appear later. From the mathematical and computational points of view the non Euclidian distance is substituted to the traditional Euclidian square root over t s w s square root over t s w s with no impact on the nature of the problem because the metrics are equivalent. Obviously this impacts the shape of the resulting ruled surface. Yet this change is not relevant to the user because the quality of the resulting ruled surface is equivalent.
+
+For the sake of completeness it should be noted that from the theoretical point of view the required coupling could be defined through a function s s k s rather than with a parameterized curve s t s w s . Yet it is to be understood that this is equivalent for the implementation of the present invention. Indeed using the constraint t s 0 and thanks to the variable change u t s s t u and
+
+Next the minimization problem is discussed and in particular the problem of continuous minimization problem.
+
+The unknown target coupling curve s t s w s is specified to minimize the objective function and satisfy the constraints. According to a preferred embodiment this can be formalized as follow 
+
+In this respect given a uniform meshing of interval 0 1 by n 1 points s ih i 0 . . . n including endpoints defined by step size h 1 n the integral can be approximated as evoked earlier by a discrete formula namely
+
+Now choosing an homogeneous function notably simplifies the formula and subsequent computation. Namely the discretized integral becomes 
+
+Next more will be said as to the choice of function . The traditional choice is the Euclidian function u v square root over u v . However the non Euclidian choice u v u v is particularly advantageous here as it is a homogeneous function. This choice turns all the more beneficial together with the setting t w h relating to the above discrete constraints whereby an efficient normalization of the optimization problem is achieved. The numerical problem turns out to be 
+
+Accordingly additional robustness arises due to the fact that unknown points move along equidistant parallel lines whereby overlap or interference is prevented. This allows the algorithm to handle complex guiding curves and even arbitrary complex curves to the knowledge of the inventors. For example very long curves featuring many small details such as local turns and rounds can be safely handled in contrast with the known prior art methods.
+
+The discussion is now directed to the implementation of an optimization algorithm. As mentioned above the present inventors found particularly advantageous to make use of the particle swarm optimization PSO algorithm. As opposed to traditional optimization algorithms the PSO algorithm performs ten to thirty optimum searches at the same time. Each searching process communicates with neighboring processes in order to take benefit of good searching directions and nevertheless is autonomous enough to investigate unexplored regions. The art of PSO algorithm is to define and implement these concepts as known by the skilled person. Experiments show for instance that good results are obtained with thirty simultaneous searches. PSO algorithm communicates with the application through external calls. It needs to periodically evaluate the objective function during the search process.
+
+When the invention is to be implemented together with strictly increasing coupling curves a challenge in implementing the PSO algorithm is to guarantee that the search is performed within a set of strictly increasing coupling curves. Different approaches can be contemplated.
+
+One possible implementation is to capture the coupling curve as a hierarchy of n 2variables x 0 1 i 1 . . . 2. Given these variables the corresponding coupling curve can be e.g. recursively defined as follows and in reference to .
+
+First xis the abscissa of the point of the coupling curve located on the second diagonal starting from top left corner . This point defines two rectangles bottom left BL x and top right TR x . In each rectangle a splitting line segment parallel to the second diagonal separates the rectangle into two equal regions.
+
+Then xis the abscissa of the coupling curve s point located on the splitting line of rectangle BL x and xis the abscissa of the coupling curve s point located on the splitting line of rectangle TR x . These new points define two bottom left rectangles BL x BL x and two top right rectangles TR x TR x equipped with their respective splitting lines .
+
+Then xis the abscissa of the coupling curve s point located on the splitting line of rectangle BL x xis the abscissa of the coupling curve s point located on the splitting line of rectangle TR x xis the abscissa of the coupling curve s point located on the splitting line of rectangle BL x and xis the abscissa of the coupling curve s point located on the splitting line of rectangle TR x as illustrated in .
+
+One understands that applied recursively this process uniquely defines a strictly increasing curve as shown in fine scale and converged limiting curve in the above example .
+
+The flow chart of illustrates an example of how to compute the Cartesian points t w of the coupling curve from hierarchical coordinates x.
+
+Clearly the reverse process computes hierarchical coordinates xfrom Cartesian coordinates t w of a strictly increasing curve by intersecting the curve with the rectangles splitting lines as illustrated in .
+
+Consequently the PSO algorithm deals with the hierarchical coordinates xof coupling curves. Each time the objective function needs to be evaluated through an external call hierarchical coordinates xare transformed into Cartesian coordinates t w .
+
+Experiments show that good results are obtained with thirty simultaneous searches and with a coupling curve sampling from 32 points to 128 points. Furthermore when PSO algorithm gets close to the optimum a traditional non linear optimization method typically BFGS can be used to accelerate the convergence. Although the method and routines described herein above are described in a naive manner for the sake of pedagogy it is obvious that improvements can be contemplated with respect to algorithm efficiency considerations. For instance it is pointed at that the present method generalizes to any surface defined by coupling two guiding curves e.g. based on guiding curves . Indeed there are several ways of coupling guiding curves that result in surfaces which are not necessarily ruled surfaces. Accordingly the present invention extends beyond the sole ruled surfaces.
+
+Client computer s devices and server computer s provide processing storage and input output devices executing application programs and the like. Client computer s devices can also be linked through communications network to other computing devices including other client devices processes and server computer s . Communications network can be part of a remote access network a global network e.g. the Internet a worldwide collection of computers Local area or Wide area networks and gateways that currently use respective protocols TCP IP Bluetooth etc. to communicate with one another. Other electronic device computer network architectures are suitable.
+
+In one embodiment the processor routines and data are a computer program product generally referenced including a computer readable medium e.g. a removable storage medium such as one or more DVD ROM s CD ROM s diskettes tapes etc. that provides at least a portion of the software instructions for the invention system. Computer program product can be installed by any suitable software installation procedure as is well known in the art. In another embodiment at least a portion of the software instructions may also be downloaded over a cable communication and or wireless connection. In other embodiments the invention programs are a computer program propagated signal product embodied on a propagated signal on a propagation medium e.g. a radio wave an infrared wave a laser wave a sound wave or an electrical wave propagated over a global network such as the Internet or other network s . Such carrier medium or signals provide at least a portion of the software instructions for the present invention routines program .
+
+In alternate embodiments the propagated signal is an analog carrier wave or digital signal carried on the propagated medium. For example the propagated signal may be a digitized signal propagated over a global network e.g. the Internet a telecommunications network or other network. In one embodiment the propagated signal is a signal that is transmitted over the propagation medium over a period of time such as the instructions for a software application sent in packets over a network over a period of milliseconds seconds minutes or longer. In another embodiment the computer readable medium of computer program product is a propagation medium that the computer system may receive and read such as by receiving the propagation medium and identifying a propagated signal embodied in the propagation medium as described above for computer program propagated signal product.
+
+Generally speaking the term carrier medium or transient carrier encompasses the foregoing transient signals propagated signals propagated medium storage medium and the like.
+
+While this invention has been particularly shown and described with references to example embodiments thereof it will be understood by those skilled in the art that various changes in form and details may be made therein without departing from the scope of the invention encompassed by the appended claims.
+

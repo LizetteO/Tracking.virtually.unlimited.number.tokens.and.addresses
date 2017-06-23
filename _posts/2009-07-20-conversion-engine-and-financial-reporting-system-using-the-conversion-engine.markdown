@@ -1,0 +1,351 @@
+---
+
+title: Conversion engine and financial reporting system using the conversion engine
+abstract: A computerized management system is provided. The system includes a routine for accessing journal entries stored in a memory and an automated journal entry generating routine for generating journal entries for a first set-of-books and for a second set-of-books based on the accessed journal entries. The journal entries for the first set-of-books are in accordance with a first reporting standard and the journal entries for the second set-of-books are in accordance with a second, different reporting standard.
+url: http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&p=1&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=1&f=G&l=50&d=PALL&S1=08311908&OS=08311908&RS=08311908
+owner: Oracle International Corporation
+number: 08311908
+owner_city: Redwood Shores
+owner_country: US
+publication_date: 20090720
+---
+This application is a division of application Ser. No. 10 371 181 filed Feb. 24 2003 now U.S. Pat. No. 7 565 311 which is a continuation of application Ser. No. 10 177 764 filed Jun. 24 2002 now abandoned which is a continuation of application Ser. No. 09 976 289 filed Oct. 15 2001 now abandoned which is a continuation of application Ser. No. 09 775 801 filed Feb. 5 2001 now abandoned which is a continuation of application Ser. No. 09 563 913 filed May 4 2000 now abandoned which claims the benefit of provisional Application No. 60 171 097 filed Dec. 16 1999.
+
+The present invention generally relates to a financial reporting system and method and more particularly to a financial reporting system and method that generates financial statements for different reporting standards.
+
+A financial reporting system for a business is generally composed of different applications. In the case of a bank these applications may include a general ledger application and a loan processing application. These applications generate financial statements that are in accordance with relevant generally accepted accounting principals GAAP . GAAP refers to the set of rules convention standards and procedures for reporting financial information. US GAAP for example are established by the Financial Accounting Standards Board FASB . Differences generally exist between the GAAP of different countries. In view of the multinational environment in which many businesses operate it would be desirable to provide a financial reporting system and method that accommodates differences between the GAAP of different countries.
+
+In accordance with one aspect of the present invention a management system includes a computer implemented routine for accessing journal entries stored in a computer readable memory and a computer implemented journal entry generating routine for automatically generating journal entries for a first set of books and for a second set of books based on the accessed journal entries. The journal entries for the first set of books are in accordance with a first reporting standard and the journal entries for the second set of books are in accordance with a second different reporting standard.
+
+The management system and method described herein provides a single workflow that may be applied to converting a book of original entries in one accounting system to another reporting book in a different accounting system. The system and method allow a user for example to set up the accounting method of various items according to any country s GAAP. By way of example the management system and method described herein provide an automated conversion engine for loan transactions. The conversion engine processes transactions from a lending application and applies a series of rules that automatically generates journal entries that accommodate the differences between US GAAP and Japanese JP GAAP. For example under US GAAP non refundable fees associated with a term loan agreement are deferred and amortized over the life of the loan. Under JP GAAP such fees are treated as immediate income. When a transaction for an up front fee payment is entered into a commercial lending application for US GAAP the commercial lending application generates the entries to defer the fee and amortize it. When the conversion engine of the present invention detects these transactions it reverses the deferral and treats the fee as income for JP GAAP. The conversion engine also reverses any subsequent amortization because the fee has already been recognized.
+
+The conversion engine is configured to perform similar conversions based on other differences between the US and JP GAAP.
+
+The accompanying drawings which are incorporated in and constitute a part of the specification illustrate various features of the present invention and together with the general description given above and the detailed description provided below serve to explain the principles of the invention.
+
+Conversion engine selectively processes these data records in accordance with rules contained in a rules database . The processing is selective in the sense that conversion engine examines a certain one or more of the fields in the data record to determine whether a rule for converting the data record exists in rules database . The rules in rules database are used to convert the data records to take into account different treatments of the data contained in the data records by different regulatory authorities different taxing authorities different statutory accounting requirements different generally accepted accounting principles and the like.
+
+For example under US GAAP non refundable fees associated with a term loan agreement are deferred and amortized over the life of the loan. Under JP GAAP such fees are treated as immediate income. A commercial lending application used by a US based financial institution typically generates a data record for such a loan agreement in which the non refundable fees are deferred and amortized. A data record for an up front fee payment is supplied to conversion engine . This data record in which the non refundable fees are deferred and amortized is sent to a US Set of Books SoB via conversion engine . Conversion engine replicates this data record for a JP SoB and determines whether any rules in rules database are applicable to the data record. In this case as mentioned above under JP GAAP a non refundable fee associated with a term loan agreement is treated as immediate income. Thus a rule exists in rules database for reversing the deferral reflected in the corresponding data record in US SoB so that the fee is treated as income for purposes of JP GAAP. Conversion engine also reverses any subsequent amortization because the fee has already been recognized. Thus the data record written to JP SoB is in accordance with JP GAAP.
+
+Conversion engine may also be configured to generate data records for an Adjustment SoB that reflect the adjustments made by conversion engine . Adjustment SoB is used to retain an audit trail and to summarize the cumulative adjustments for subsequent review by controllers auditors examiners etc. Together US SoB JP SoB and adjustment SoB serve as the basis for financial reporting.
+
+Conversion engine may be used without limitation to generate data records for other SoBs as suggested in .
+
+As mentioned above conversion system may be used in connection with a commercial lending system a deposit system a treasury system a trade finance system an accounts payable system an inventory system or an accounts receivable system. In what follows a detailed description is provided of a conversion engine used in connection with a commercial lending system. This detailed description is provided by way of illustration not limitation.
+
+The conversion engine described below is typically provided as one component of a management system for a particular business such as a bank. This management system may include various commercially available software applications and the conversion engine described herein interfaces with perhaps using middleware and uses data generated and output by these other applications. The description below is given with reference to certain software applications for performing certain functions e.g. commercial lending general ledger . These software applications are identified by way of illustration not limitation. Thus those of ordinary skill in the art will recognize that the conversion engine of the present invention may be effectively utilized with many different software applications that together make up a management system for a particular business.
+
+In particular the conversion engine described herein is utilized with a commercial lending application known as LS2 LS2 also known as Loan 1Q or L1Q that was jointly developed by International Business Machines and Bankers Trust a general ledger application known as Oracle General Ledger Oracle GL and a middleware application MQSI from Neon. The general architecture of a management system including a conversion engine in accordance with an embodiment of the present invention is described with reference to . A commercially available commercial lending application such as the above mentioned LS2 commercial lending application generates journal entries based on the transactions initiated by its users. Commercial lending application may have its own chart of accounts and populates the journal entries to a table such as an Oracle GL Out Table. For US based institutions these journal entries will typically conform to US GAAP. The journal entries accumulated in detail by account transaction and customer in the table are sent through a middleware application such as the above mentioned NEON MQSI software to an interface table of a general ledger application such as the above mentioned Oracle GL software . In the particular case of using the LS2 commercial lending application and the Oracle GL general ledger software for example there is no conversion of the data in the journal entries by middleware application other than perhaps converting from LS2 GL account to Oracle GL account numbers.
+
+Each journal entry has an Accounting Flex Field AFF and a Descriptive Flex Field DFF . In one particular implementation the AFF is made up of a combination of a Branch Facility Number a Department identifier a GL Account Number and a Control Branch Number. Every journal entry has an AFF composed of these elements. The DFF is context sensitive i.e. the elements thereof depend on the type of journal entry. While every journal entry has a descriptive flex field the elements thereof vary based on the type of journal entry. Examples of elements that may be included in the DFF for a particular type of journal entry include Risk Type Customer Number Security IDs Product and Portfolio. As will be explained below Portfolio plays a role in the conversion processing.
+
+When the batch entry of journal entries into interface table is complete an automatic import procedure imports the journal entries into US SoB . The imported journal entries may be grouped together using a journal entry header. The journal entries under a journal entry header share a common Business Transaction Code Accounting Effective Date Currency and Risk Type. Upon the successful creation of a journal entry header in the US SoB the entry is replicated from US SoB to JP SoB . Conversion engine then does an analysis based on for example the Business Transaction Code and or Portfolio to determine if any rules affect the replicated entry.
+
+1. Selective Conversion Conversion engine is configured to sift through journal entries and select those that are affected by the business rules to be described below based on criteria such as risk type portfolio type and or account. Selective conversion as used herein includes the capability to effect adjustments to only part of a journal entry.
+
+2. Minimum Maximum Logic Conversion engine is provided with logic to determine the minimum or maximum value of an array. This logic is employed for calculating the gain or loss on the sale of loans with premiums or discounts.
+
+3. Cross Referencing Conversion engine is configured to reference tables outside the conversion program to look up values. This is employed for determining general ledger accounts that may have been changed to the recalculation of a gain or loss due to GAAP differences.
+
+As mentioned above after the US GAAP based journal entries are replicated in JP SoB conversion engine determines whether any rules in a rules database associated with conversion engine are applicable to the replicated journal entries. In one implementation these rules are organized into two database tables an exclusion rules table and a reclassification rules table. The exclusion rules in the exclusion rule table reverse journal entries or exclude them from the target set of books and the reclassification rules in the reclassification rules table change or substitute items in the AFF e.g. the GL Account . If there are rules in the rules database applicable to the replicated journal entries conversion engine applies these rules so that the journal entries in JP SoB are in accordance with JP GAAP. Conversion engine also makes appropriate journal entries to an adjustment SoB . Adjustment SoB is used to retain an audit trail and to summarize the cumulative adjustments for subsequent review by controllers auditors examiners etc. Adjustment SoB is further supported by comprehensive audit trail conversion reports that document the transactions affected by expenses code portfolio risk type transaction reference number the pre and post conversion balances and the purpose of the adjustment e.g. to reverse the deferral of upfront fees . Together US SoB adjustment SoB JP SoB and the audit trail report serve as the basis for financial reporting.
+
+Certain manual journal entries may be passed to adjustment SoB and JP SoB to accommodate those transactions not covered by the conversion rules in the rules database associated with conversion engine . Manual journal entries are implemented by constructing an interface that permits a user to selectively pass entries to a specified SoB.
+
+Thus conversion engine is a rules based engine that selectively applies conversion logic and automates the generation of journal entries for a plurality of different SoBs. The conversion engine is a single flow process in that it is operative as a data record is being processed i.e. whenever conversion engine detects a data record having a particular characteristic it applies the appropriate rules from the rules database.
+
+Conversion engine may be implemented using Oracle Workflow . Oracle Workflow permits users to define and automate business processes each business process consisting of a series of activities and inter activity dependencies. Oracle Workflow Builder is a tool that permits users to create view and or modify a business process with mouse operations. The Oracle Workflow Engine monitors workflow states and coordinates the routing of activities for a process. An activity in a process definition can be an automated function defined by a PL SQL stored procedure a notification to a user that may optionally request a response or a sub flow that itself decomposes to a more granular set of activities. A workflow process is initiated when an application calls a set of Oracle Workflow Engine APIs Application Programming Interfaces . The Oracle Workflow Engine divides the relevant work item defined by the application through a specific workflow process definition. According to the workflow process definition the Workflow Engine performs automated steps and invokes appropriate agents when external processing is required. The detailed description below will enable those skilled in the art to generate e.g. using Oracle Workflow Builder business processes for implementing a conversion engine in accordance with the present invention.
+
+Oracle Financial Statement Generator is a report writing tool that allows users to develop various reports without programming. This tool may sit on an Oracle database e.g. Version 8.05 running on an IBM RS600 SP with an AIX operating system. This tool can be used for example to present financial information by reclassifying and grouping applicable accounts and is usable to handle GAAP conversion items that do not require computation such as the presentation of certain balance sheet items.
+
+Finally NEON MQSI software may be used as a middleware tool to provide a data interface between various applications. The NEON software may sit on an Oracle database e.g. Version 8.05 running on an IBM RS6000 SP with an AIX operating system. For purposes of the GAAP conversion this middleware ensures the completeness of data necessary for conversion and translates certain LS2 specific data values to Oracle GL values. The middleware application comprises an important part of data reconciliation during daily data posting and GAAP conversion processes. The objective of reconciliation using the middleware tool is twofold 1 LS2 to US GAAP which requires no data manipulation the primary purpose is to ascertain the completeness and accuracy of data and 2 LS2 to JP GAAP which executes the applicable conversion procedures.
+
+If a new journal header is created in the US SoB an alert is triggered at . This alert triggers a PL SQL package that constitutes conversion engine and results in processing that replicates entries in US SoB for JP SoB .
+
+GL INTERFACES This table is an interface table to Oracle GL loaded with different data i.e. different SoBs Debit and Credit amounts GL accounts specific journal entry line information and source.
+
+GL JE BATCHES GL JE HEADERS GL JE LINES GL JE CATEGORIES and GL JE SOURCES are used to get the batch header line source category details of the batch.
+
+Conversion engine then evaluates whether the replicated entries are treated differently under US and JP GAAP by reference to a custom table SUMI RULE ADJUSTMENTS . Table stores adjustment names rule type and other segment values. Conversion engine uses the data in this table to check whether the journal entry category is treated differently under US and JP GAAP. If the journal entry category exists in table there is a different treatment between US GAAP and JP GAAP. Conversion engine determines whether this different treatment is based on an exclusion rule at or a reclassification rule at and prepares the appropriate conversion entry.
+
+SUMI RULE EXCLUSIONS table contains those journal entry categories that are excluded or need to be reversed under JP GAAP. This table stores the exclusion rule numbers the exclusion rules names and the exclusion flags. Using the data in table the replicated journal entry in JP SoB is adjusted at for JP GAAP and an appropriate journal entry is made in Adjustment SoB .
+
+SUMI RULE RECLASS table contains those journal entry categories that require a reclassification between GL accounts. This table contains the rule numbers reclassification codes reversal flags and other segments. Table also contains flags for adjustments to be omitted based on a journal entry category using an exclusion flag. This table is used with a table called SUMI NAT ACCT. SUMI NAT ACCT table is used in conjunction with SUMI RULE RECLASS table and contains accounts to be substituted by the reclass rule. The table contains the source Natural Account Segment and the target adjustment Natural Account Segment HO CODE segment and BRANCH CODE segments.
+
+If the journal entry category of the replicated journal entry exists in SUMI RULE RECLASS there is a different treatment in US and JP GAAP. If the journal entry category is found conversion engine evaluates the SUMI NAT ACCT table for the corresponding adjustment account and an adjustment is made at . Together these tables are used to re map the GL accounts used in the original entry into a different account in JP SoB .
+
+The packages used are WF ENGINE WF CORE FND GLOBAL and FND REQUEST. WF ENGINE uses the WF ENGINE Get Item Attribute Number to get the relevant Batch attributes of the batch being processed and other procedures in the package to get the Batch properties. WF CORE is used for context details FND GLOBAL is used to initialize the import program parameters and FND REQUEST is used to submit the import program from the operating system OS level.
+
+The charts of accounts of Oracle GL are comprised of two components account captions horizontal and key segments vertical . These key segments in Oracle s applications are referred to as FlexFields . As mentioned above there are two types of FlexFields Accounting required and Descriptive optional . Defining the format of the FlexFields before implementation is a minimum requirement. Since neither Accounting nor Descriptive FlexFields are generally easily modifiable after implementation it is very important to design them with sufficient care and consideration for future needs. Identification of each of the Accounting and Descriptive FlexFields follow with reference to . Unless otherwise specified all fields are alphanumeric. Any relationships suggested in are by way of example not limitation.
+
+In the US this field serves to specify the domestic or international banking facility. The default value specifies domestic. In other countries the segment may be reserved to denote different market jurisdictions under the applicable requirements. A predetermined character string e.g. 00 may be used to indicate N A not applicable .
+
+This is also known as the cost profit center code. Each lower level department has a department code assigned. The first character denotes a department group and the remaining two characters denote a unique department code.
+
+This field describes the branch claiming the ownership of a balance or transaction recorded in Oracle GL.
+
+This field is useful for GAAP conversion purposes and producing reports such as profitability. Accounts are grouped by product type and a value is assigned for each of the accounts.
+
+This field like the Product Code is used for GAAP conversion purposes and for producing reports such as profitability.
+
+In addition to the above fields the following data component in the LS2 GL Entry Table is used by conversion engine 
+
+Stored PL SQL based procedures provide the framework of conversion engine for performing the above described conversions. These stored procedures may be implemented in any suitable computing environment such as an environment that runs Oracle Workflow . illustrates a computer system suitable for use in connection with the conversion engine. Computer system includes a processing unit and a system memory . A system bus couples various system components including system memory to processing unit . System bus may be any of several types of bus structures including a memory bus or memory controller a peripheral bus and a local bus using any of a variety of bus architectures. System memory includes read only memory ROM and random access memory RAM . A basic input output system BIOS containing the basic routines that help to transfer information between elements within personal computer system such as during start up is stored in the ROM . Computer system further includes various drives and associated computer readable media. A hard disk drive reads from and writes to a typically fixed magnetic hard disk a magnetic disk drive reads from and writes to a removable floppy or other magnetic disk and an optical disk drive reads from and in some configurations writes to a removable optical disk such as a CD ROM or other optical media. Hard disk drive magnetic disk drive and optical disk drive are connected to system bus by a hard disk drive interface a magnetic disk drive interface and an optical drive interface respectively. The drives and their associated computer readable media provide nonvolatile storage of computer readable instructions SQL based procedures data structures program modules and other data for computer system . In other configurations other types of computer readable media that can store data that is accessible by a computer e.g. magnetic cassettes flash memory cards digital video disks Bernoulli cartridges random access memories RAMs read only memories ROMs and the like may also be used.
+
+A number of program modules may be stored on the hard disk removable magnetic disk optical disk and or the ROM and or the RAM of system memory . Such program modules may include an operating system providing graphics and sound APIs one or more application programs other program modules and program data. A user may enter commands and information into computer system through input devices such as a keyboard and pointing device . Other input devices may include a microphone joystick game controller satellite dish scanner or the like. These and other input devices are often connected to processing unit through a serial port interface that is coupled to system bus but may be connected by other interfaces such as a parallel port interface or a universal serial bus USB . A monitor or other type of display device is also connected to system bus via an interface such as a video adapter .
+
+Computer system may also include a modem or other means for establishing communications over wide area network such as the Internet. Modem which may be internal or external is connected to system bus via serial port interface . A network interface may also be provided for allowing computer system to communicate with a remote computing device via a local area network or such communication may be via wide area network or other communications path such as dial up or other communications means . Computer system will typically include other peripheral output devices such as printers and other standard peripheral devices.
+
+GAAP conversions may be viewed as being of one of three different types a first type involving reclassifications a second type involving more complex conversion calculations and a third type involving manual adjustment of journal entries. With reference to the software applications mentioned above the first type of GAAP conversion may be implemented using Oracle Financial Statement Generator and the second type of GAAP conversion may be implemented using Oracle Alert and Oracle Workflow. Manual adjustment may be utilized in those cases where neither Oracle Financial Statement Generator nor Oracle Workflow and Oracle Alert are practical due to the complexity materiality or frequency of the transaction. In such cases the cost of building automated procedures may significantly exceed the expected benefits.
+
+The following table summarizes each type respective descriptions and exemplary transactions for each proposed approach 
+
+A more detailed explanation of these illustrative loan processing application transactions and approaches is provided below.
+
+Statement of Financial Accounting Standards No. 91 SFAS No. 91 establishes the accounting for nonrefundable fees and costs associated with lending committing to lend or purchasing a loan or group of loans. Such nonrefundable upfront loan fees including commitment fees and syndication fees among others should be deferred and recognized over the contractual life of the loan or facility as interest or fee income. Whereas the interest method is the preferred method under SFAS No. 91 the straight line method is also appropriate because of immateriality.
+
+Upfront loan fees are recognized as fee income when related services are provided normally when received . No deferral or amortization of these fees as an adjustment of yield is recorded.
+
+There are two types of fees related transactions that affect the GAAP conversion approach loans originated or purchased at 1 par or 2 discount or premium. For purposes of loan processing GAAP conversion only type 1 loans issued at par are subject to adjustment. Accounting for amortization of discount or premium on loans is substantially the same under both US GAAP and JP GAAP and requires no further computation or reclassification.
+
+A code may be used to differentiate loans issued at par from those at discounts or premiums. For example if the LS2 loan processing application is used the Portfolio Code may be used for differentiation. LOANPAR may be used for loans issued at par DISCPREM for loans issued at a discount or premium.
+
+The LS2 commercial lending application computes amortization of upfront loan fees based on the straight line method.
+
+The straight line method is used as the amortization method because the difference from the interest rate method is immaterial.
+
+The LS2 commercial lending application allows its users to defer and amortize upfront fees as an adjustment to yield or fee income in accordance with FASB Statement No. 91. Therefore for JP GAAP reporting purposes the deferral and amortization should be reversed and adjusted to fee income when received.
+
+In addition the LS2 commercial lending application defers and amortizes as income the price difference of the loan the difference between principal amount and actual price for the loan origination or purchase as position discount or position premium together with deferred upfront fee income. This accounting treatment is consistent with US GAAP. Even under JP GAAP the price difference should be deferred and amortized as interest over the life of the loan.
+
+Under the normal practices the relationship of upfront fees and the loan origination and purchase price are as follows 
+
+In cases 1 and 2 Position Discount or Premium Position account calculated by the LS2 commercial lending application represents Upfront Fees that should be recognized as income immediately under JP GAAP. On the other hand in cases 3 and 4 Position Discount or Position Premium account calculated by the LS2 commercial lending application represents the price difference that should be deferred and amortized as income under JP GAAP as well as US GAAP.
+
+Loan transactions are categorized into first and second transaction types. These two transaction types are created as two different Portfolios in the LS2 commercial lending application and a user selects one or the other based on transaction information. In Oracle GL Interface Table the Portfolio of the LS2 commercial lending application is captured as Portfolio Type in the Descriptive Flexfield. The first transaction type is Loans Originated Purchased at Par Regular Loan Origination and Regular Loan Purchase Portfolio Code LOANPAR . The second transaction type is Loans Purchased at Discount or Premium Distressed Loan and Private Placement Bond Portfolio Code DISCPREM . The accounting for the second transaction type portfolio is consistent under JP and US GAAP. Therefore if conversion engine receives US GAAP journal entries related to the second transaction type no journal entries are made to Adjustment SoB and the US GAAP journal entries are submitted to JP SoB as proper JP GAAP journal entries.
+
+However the position discount and position premium including Fees Held Awaiting Disposition and Unfunded Discount of the first transaction type portfolio represents deferred upfront fee that should be credited to income when received under JP GAAP. Accordingly if conversion engine receives US GAAP journal entries related to the first transaction type conversion engine generates journal entries for Adjustment SoB . Conversion engine combines US GAAP journal entries and GAAP adjustment journal entries to produce proper IP GAAP journal entries.
+
+More specifically US GAAP journal entries generated by the LS2 commercial lending application are submitted to conversion engine together with Business Transaction Code and Portfolio through Oracle GL Interface Table . If conversion engine receives journal entries for Portfolio Code Loan Originated Purchased at Par LOANPAR it prepares the following GAAP Conversion journal entries for the following Business Transaction Code to convert US GAAP journal entries to JP GAAP journal entries 
+
+The US GAAP journal entry of the LS2 commercial lending application temporarily records an upfront loan fee received for facility in syndication as a Fee Held Awaiting Disposition FHAD until syndication is completion. For JP GAAP reporting purposes upfront loan fees are credited to fee income account Upfront Loan Fee Income when received.
+
+Conversion engine prepares Conversion journal entries for Adjustment SoB to credit the amount of the received upfront fee to Upfront Loan Fee Income and debit the amount to Fee Held Awaiting Disposition FHAD on the date of receipt. Separate Upfront Fee Income accounts are created for Loan on Note Loan Certificate and Other Product respectively. This journal entry is prepared by the Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+2. Distribution to Participating Lender Paid to Borrower Seller Business Transaction Code EFPFH CPSDC 
+
+The US GAAP journal entry of the LS2 commercial lending application debits the amount distributed to a participating lender or paid to borrower seller to Fee Held Awaiting Disposition FHAD . For JP GAAP reporting purposes the amount paid is debited to the fee income account Upfront Loan Fee Income when paid.
+
+Conversion engine prepares Conversion journal entries for Adjustment SoB to debit the upfront fee distributed to a participating lender to Upfront Loan Fee Income and credit the amount to Fee Held Awaiting Disposition FHAD on the date of payment. As well as receipt of upfront fee proper Upfront Fee Income Account should be used based on type of loan loan on note certificate and other . This journal entry is prepared by Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+When the syndication is closed the host bank s share of upfront fee is determined and transferred to position discount premium accounts i.e. Position Discount DISC Position Premium PRMUM or Unfunded Discount UNFDS by the LS2 commercial lending application. For JP GAAP reporting purposes the amount is already recognized as income and the transfer entries should be reversed.
+
+Conversion engine prepares Conversion journal entries for Adjustment SoB to debit the amount of transfer to Position Discount DISC or Unfunded Discount UNFDS and credit the amount to Fee Held Awaiting Disposition FHAD . In case of premium position the amount is credited to Position Premium PRMUM or Unfunded Discount UNFDS and debited to Fee Held Awaiting Disposition FHAD . This journal entry is prepared by Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. In this case Conversion journal entries will offset US GAAP journal entries and no journal entries are passed to JP SoB . Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+Under US GAAP as the syndication is closed the remainder in Fee Held Awaiting Disposition FHAD after distribution to participating lender and transfer to discount account is credited to Syndication Fee SYNFM as fee income. However for JP GAAP reporting purposes the upfront loan fee is already recognized as income. Thus the US GAAP journal entry should be reversed.
+
+Conversion engine prepares Conversion journal entries for Adjustment SoB to reverse US GAAP entry regarding recognition of the remaining upfront fee in Fee Held Awaiting Disposition FHAD as Syndication Fee SYNFM by debiting the amount to Syndication Fee SYNFM and crediting to Fee Held Awaiting Disposition FHAD . This journal entry is prepared by Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. In this case Conversion journal entries will offset US GAAP journal entries and no journal entries are passed to JP SoB . Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+The LS2 commercial lending application prepares a US GAAP journal entry regarding amortization of discount accounts by debiting calculated amortization amount to Position Discount DISC Position Premium PRMUM or Unfunded Discount UNFDS and crediting the amount to Amort. Commitment Fee Income ACOMF or Amort. Interest Income Orig. Fees AINTI . For JP GAAP reporting purposes the fee deferred as discount accounts is already recognized as income and the amortization entries should be reversed.
+
+Conversion engine prepares the Conversion journal entry for Adjustment SoB to reverse US GAAP journal entries regarding amortization of discount accounts i.e. debit to Amort. Commitment Fee Income ACOMF or Amort. Interest Income Orig. Fees AINTI and credit to Position Discount DISC or Unfunded Discount UNFDS . In the case of premium position the amount is debited to Position Premium PRMUM or Unfunded Discount UNFDS and credited to Amort. Commitment Fee Income ACOMF or Amort. Interest Income Orig. Fees AINTI . This journal entry is prepared by Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. In this case Conversion journal entries offset US GAAP journal entries and no journal entries are passed to JP SoB . Even if reversal entries related to this business event for correction of error or cancellation is received GAAP conversion can be processed by the same logic and conversion engine.
+
+If the loan becomes non performing non accrual status loan Position Discount and Position Premium are transferred to related non accrual accounts i.e. Position Discount Non Accrual and Position Premium Non Accrual . For JP GAAP purposes the Discount and Premium are already recognized as income. Therefore conversion engine prepares GAAP Conversion journal entries to reverse the transfer entries.
+
+Conversion engine prepares the Conversion journal entry for Adjustment SoB to reverse US GAAP journal entries regarding the account transfer by debiting the amount to Position Discount DISC Non Accrual and crediting to Position Discount DISC Accrual or debiting to Position Discount DISC Accrual and Position Premium PRMUM Non Accrual . This journal entry is prepared by Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. In this case Conversion journal entries will offset US GAAP journal entries and no journal entries are passed to JP SoB . Even if reversal entries related to this business event for correction of error or cancellation is received GAAP conversion can be processed by the same logic and conversion engine.
+
+If the non performing non accrual status loan becomes performing accrual status the transfer back from Non Accrual accounts to Accrual accounts of Position Discount and Position Premium is made by the LS2 commercial lending application. For JP GAAP purposes the original transfer entries from accrual to non accrual are reversed and therefore conversion engine prepares Adjustment journal entries to reverse the transfer back entries.
+
+Conversion engine prepares the Conversion journal entries for Adjustment SoB to reverse US GAAP journal entries by debiting Position Discount DISC Accrual and crediting to Position. Discount DISC Non Accrual or debiting to Position Discount DISC Non Accrual and Position Premium PREM Accrual . This journal entry is prepared by Upfront Fee Conversion Program Fee Recognition to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. In this case Conversion journal entries offset US GAAP journal entries and no journal entries are passed to JP SoB . Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+When a loan is sold under US GAAP unamortized discount premium accounts are disposed and realized as adjustment to Gain on Sale GNOSL and Loss on Sale LSOSL . Under JP GAAP the unamortized amount is already recognized as income when received paid. Therefore US GAAP amount of Gain on Sale GNOSL should be adjusted by the unamortized amount of discount premium.
+
+Conversion engine prepares the Conversion journal entries for Adjustment SoB that are necessary to adjust gain and loss on sale by the unamortized amount of discount premium account at the time of sale. For example the unamortized discount will be debited to Gain on Sale GNOSL or Loss on Sale LSOSL and credited to Position Discount DISC or Unfunded Discount UNFDS . In the case of unamortized premium the amount is credited to Gain on Sale GNOSL or Loss on Sale LSOSL and debited to Position Premium PRMUM or Unfunded Discount UNFDS . This journal entry is prepared by Upfront Fee Conversion Program Sale to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+Under US GAAP charge off amount of loan can be applied to Discount Position DISC and the offset will reduce the amount to be debited to Loss on Charge Off ALLOW . Also Position Discount PRMUM will be charged off as well as principal amount and it will increase Loss on Charge Off ALLOW . However for JP GAAP reporting purposes the fee deferred as Position Discount DISC or Position Premium PRMUM is already recognized as income negative income when received or paid . Accordingly the amount of Premium and Discount including Unfunded Discount UNFDS should be adjusted to Loss on Charge Off ALLOW under JP GAAP.
+
+Conversion engine prepares Conversion journal entries for Adjustment SoB to credit Discount Position DISC or Unfunded Discount UNFDS and debit Loss on Charge Off ALLOW . For premium positions the entry should be debited to Position Premium PRMUM or Unfunded Discount UNFDS and credited to Loss on Charge Off ALLOW . This journal entry is prepared by Upfront Fee Conversion Program Charge Off to be described below.
+
+Conversion engine prepares JP GAAP journal entries for JP SoB by combining netting US GAAP journal entries and Conversion journal entries. Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and conversion engine.
+
+The LS2 commercial lending application also creates upfront fee related journal entries for other loan related transactions. These transactions are adjustments to and transfers between discount position premium position unfunded discount and related PL accounts. For JP GAAP purposes all these entries related to upfront fee should be reversed. Accordingly for loan related transactions for Business Transaction Codes other than above US GAAP Journal Entries should be converted to JP GAAP using Program Fee Recognition . Even if reversal entries related to this business event for correction of error or cancellation are received GAAP conversion can be processed by the same logic and Conversion Program.
+
+Other interface information for US SoB e.g. Date of Creation Accounting Date Product Code Customer Code etc. is submitted to Adjustment SoB and JP SoB without modification except for Group ID . The Group ID for US SoB is US GAAP . This is replaced with Conversion and JP GAAP for Adjustment SoB and JP SoB respectively.
+
+After a Conversion journal entry is prepared JP GAAP journal entries are prepared at ST based on the US GAAP journal entries and the Conversion journal entries. The JP GAAP journal entries are prepared by netting out the US and Conversion journal entries and modifying the Group ID to JP GAAP . The JP GAAP journal entries are exported to JP SoB at ST . The Conversion journal entries prepared at ST are exported to Adjustment SoB at ST .
+
+Information other than Discrepancy Reports DR Change Requests CR indicator account number and amount are extracted at ST . The Conversion journal entry is completed and all information is merged at ST .
+
+Conversion engine converts journal entries on only accounts related to deferral and amortization of Upfront Loan Fee Upfront Fee Related Accounts . Illustrative Upfront Fee Related Accounts in one implementation of the LS2 commercial lending application are listed in Table II below. The business transaction codes that are affected by GAAP Conversion are also listed.
+
+In order to prepare Conversion journal entries conversion engine extracts all the entries to the Upfront Fee Related Accounts in US GAAP journal entries. Conversion engine then reverses these entries and posts the net amount to Gain on Sale of Loan or Loss on Sale of Loan as an adjustment to these amounts. Accordingly Dr Cr Indicator of all the US GAAP journal entries to the Upfront Fee Related Accounts should be reversed and net amount entered as debit or credit account of Upfront Fee Income to balance the Conversion journal entries.
+
+If it is determined at ST that the DR CR indicators of the net amount are not equal to the DR CR indicator of the gain or not equal to the DR CR indicator of the loss then at ST Gain ADJ is calculated as Gain ADJ MIN Net Amount Gain on Sale and Loss ADJ is calculated as Loss ADJ MAX Net Amount Gain on Sale 0 . At ST DR CR Indicator of Net Amount is assigned to both Gain on Sale and Loss on Sale and the Amount of Gain ADJ is assigned to Gain on Sale and the Amount of Loss ADJ is assigned to Loss On Sale.
+
+At ST the Conversion journal entries of Program are completed and all the elements of the journal entries are netted out.
+
+More specifically the amount to be adjusted to Gain on Sale GNOSL or Loss on Sale LSOSL as Conversion journal entries should be determined as follows 
+
+Amount to be adjusted to Gain on Sale GNOSL Minimum Unamortized Discount under US GAAP Gain on Sale GNOSL under US GAAP and
+
+Amount to be adjusted to Loss on Sale LSOSL Maximum Unamortized Discount under US GAAP Gain on Sale GNOSL under US GAAP 0 
+
+If the US GAAP journal entry is a normal sale transaction the adjustment amount should be debited to Gain on Sale GNOSL and Loss on Sale LSOSL and credited to Position Discount DISC or Unfunded Discount UNFDS to prepare the Conversion journal entry.
+
+If the US GAAP journal entry is a reversal of original sale transaction for correction the adjustment amount should be credited to Gain on Sale GNOSL and Loss on Sale LSOSL and debited to Position Discount DISC or Unfunded Discount UNFDS to prepare the Conversion journal entry.
+
+Amount to be adjusted to Gain on Sale GNOSL Maximum Unamortized Premium under US GAAP Gain on Loss LSOSL under US GAAP 0 and
+
+Amount to be adjusted to Loss on Sale LSOSL Minimum Unamortized Premium under US GAAP Gain on Loss LSOSL under US GAAP .
+
+If the US GAAP journal entry is normal sale transaction the adjustment amount should be credited to Gain on Sale GNOSL and Loss on Sale LSOSL and debited to Position Discount DISC or Unfunded Discount UNFDS to prepare the Conversion journal entry.
+
+If the US GAAP journal entry is a reversal of original sale transaction for correction the adjustment amount should be debited to Gain on Sale GNOSL and Loss on Sale LSOSL and credited to Position Discount DISC or Unfunded Discount UNFDS to prepare the Conversion journal entry.
+
+In order to prepare Conversion journal entries conversion engine extracts all the entries to the Upfront Fee Related Accounts . Conversion engine then reverses these entries and posts the net amount to Loss On Charge Off ALLOW as adjustments to the account. Conversion engine accordingly will reverse Dr Cr Indicator of all the US GAAP journal entries to the Upfront Fee Related Accounts and enter the net amount to debit or credit account of Loss On Charge Off ALLOW to balance the Conversion journal entries.
+
+At ST the Conversion journal entries of Program are completed and all the elements of the journal entries are netted out.
+
+In order to prepare Conversion journal entries conversion engine extracts all the entries to the Upfront Fee Related Accounts . Conversion engine then reverses these entries and posts the net amount to Upfront Fee Income as adjustments to the account or an offset account . Conversion engine accordingly will reverse Dr Cr Indicator of all the US GAAP journal entries to the Upfront Fee Related Accounts and enter the net amount to debit or credit account of Upfront Fee Income to balance the Conversion journal entries.
+
+ Upfront Fee Income is created for Loan on Notes A C 544301 Upfront Loan Fee Income Loan on Note Loan on Certificate A C 544302 Upfront Loan Fee Income Loan on Certificate and other products A C 544303 Upfront Loan Fee Income Other respectively. These account distributions are determined based on Risk Type supplied from the LS2 commercial lending application and captured in the Oracle interface table .
+
+If at ST it is determined that Net Amount does not equal CR Balance at ST DR is assigned as the DR CR indicator and the Amount of Net DR Balance is assigned to Loss on Charge Off. Then at ST it is determined whether Risk Type Loan on Certificate Group. If so the Amount of Net DR Balance is assigned to Upfront Fee Loan on Cert at ST . If not the Amount of Net DR Balance is assigned to Upfront Fee Loan on Note at ST .
+
+At ST the Conversion journal entries of Program are completed and all the elements of the journal entries are netted out.
+
+In accordance with US GAAP loans held for sale are reported at the Lower of Cost or Market Value LOCOM . In accordance with JP GAAP loans held for sale are reported at cost. The LS2 commercial lending application allows users to value facility held for sale at LOCOM in accordance with US GAAP AICPA s Guideline . A user may chose an accounting method for facility held for sale in compliance with JP GAAP that requires the Cost Method. Users in US branches select LOCOM for accounting for facility held for sale in accordance with AICPA s Guideline. Therefore for JP GAAP reporting purposes unrealized losses recognized under US GAAP should be reversed.
+
+All the US GAAP journal entries regarding LOCOM revaluation are reversed using conversion engine to create proper JP GAAP accounting consequences. The journal entries to reverse US GAAP journal entries are submitted to Adjustment SoB as Conversion journal entries. In this case no JP GAAP journal entries are submitted to JP SoB .
+
+The LS2 commercial lending application records LOCOM valuation loss via end of day batch entry EOD Batch Entry by posting life to date unrealized loss on Trade Date Available Position and Open Sale Position sold but not settled and reversing corresponding amount at end of previous day. The LS2 commercial lending application generates these journal entries for the Business Transaction Code DLYPL Daily Posting of Unrealized P L .
+
+US SoB interface information includes Business Transaction Code Oracle GL Account Code DR CR Identifier Amount as well as other information required for accounting purposes. If conversion engine receives journal entries for LOCOM revaluation i.e. Business Transaction Code DLYPL This is captured as Journal Categories Name in Oracle Interface Table conversion engine prepares the Conversion journal entries and submits the entries to the Adjustment SoB.
+
+Conversion engine prepares Conversion journal entries to reverse US GAAP journal entries regarding posting and reversing LOCOM valuation loss. These entries are prepared by reversing all the DR CR Identifier of US GAAP journal entries related to LOCOM valuation.
+
+In this case no journal entries are submitted to JP SoB because JP GAAP requires no LOCOM valuation for loans.
+
+Table IV shows sample journal entries Journal Entries for Loan Held for Sale and is a high level flowchart GAAP Conversion for Loan Held for Sale and Trading Loan .
+
+At ST conversion engine determines whether the Business Transaction Event Code DLYPL. If so the Group ID is modified to JP GAAP at ST and the JP GAAP journal entries are exported to JP SoB at ST . If the Business Event Code does not equal DLYPL a reversal entry is prepared DR CR Indicators are reversed at ST and the reversal journal entry is exported to Adjustment SoB at ST .
+
+Other interface information for US GAAP General Ledger e.g. Date of Creation Accounting Date Product Code Customer Code etc. are submitted to Adjustment SoB without modification except for Journal Category Name . Journal Category Name for US SoB is US GAAP however this will be replaced with Conversion for Adjustment journal entries.
+
+In accordance with US GAAP loans held for trading are marked to market MTM . In accordance with JP GAAP loans held for sale are reported at cost. The LS2 commercial lending application allows users to value facility held for trading at mark to market in accordance with US GAAP. Users may also chose an accounting method for facility held for trading in compliance with JP GAAP which requires the Cost Method. However users in US branches will select mark to market accounting for facility held for trading in accordance with US GAAP therefore for JP GAAP reporting purposes unrealized gain losses recognized under US GAAP should be reversed.
+
+All the US GAAP journal entries regarding MTM revaluation are reversed by using conversion engine to create proper JP GAAP accounting consequences. The journal entries to reverse US GAAP journal entries are submitted to Adjustment SoB as Conversion journal entries. In this case no JP GAAP journal entries are submitted to JP SoB .
+
+The LS2 commercial lending application records MTM revaluation gain loss via end of day batch entry EOD Batch Entry by posting life to date unrealized gain loss on Trade Date Available Position and Open Sale Position sold but not settled and reversing corresponding amount at end of previous day. The LS2 commercial lending application generates these journal entries for the Business Transaction Code DLYPL Daily Posting of Unrealized P L .
+
+US SoB interface information includes Business Transaction Code Oracle GL Account Code DR CR Identifier Amount as well as other information required for accounting purposes. If conversion engine receives journal entries for M revaluation i.e. Business Transaction Code DLYPL this is captured as Journal Categories Name in Oracle Interface Table conversion engine prepares the Conversion journal entries and submits the entries to the Adjustment SoB.
+
+Conversion engine prepares Conversion journal entries to reverse US GAAP journal entries regarding posting and reversing MTM valuation gain loss. These entries are prepared by reversing all the DR CR Identifier of US GAAP journal entries related to MTM valuation.
+
+In this case no journal entries are submitted to JP SoB because JP GAAP requires no MTM valuation for loans.
+
+Table V shows sample journal entries Journal Entries for Trading Loan and shows the high level flowchart GAAP Conversion for Loan Held for Sale and Trading Loan .
+
+Other interface information for US SoB e.g. Date of Creation Accounting Date Product Code Customer Code etc. is submitted to Adjustment SoB and JP SoB without modification except for Group ID . The Group ID for US SoB is US GAAP however this is replaced with Conversion for Adjustment SoB.
+
+Stand by Letter of Credit Guarantees and Other Risk Participation generally have no immediate accounting effect though memorandum entries will be made as contingent liabilities .
+
+Stand by Letter of Credit Guarantees and Other Risk Participation are recorded on the balance sheet as contingent liabilities. Related contingent receivables are also recorded on the balance sheet in the same amount. Actual Balance Sheet Entry .
+
+The LS2 commercial lending application originates journal entries for SBLCs and Guarantees as memorandum entries in accordance with US practices. To comply with JP GAAP these entries are reclassified into balance sheet entries.
+
+The LS2 commercial lending application books SBLC and Guarantee principal as memorandum entry in accordance with US GAAP. However JP GAAP and US GAAP financial statements can have different summarization of accounts because Oracle General Ledger system will have separate SoB for JP GAAP and US GAAP respectively. When General Ledger system compiles JP GAAP financial statement based on JP SoB SBLC and Guarantee principal account and its offset account will be included in balance sheet as Customer s Liability on Acceptance and Guarantee and Acceptance and Guarantee Outstanding respectively. When General Ledger system compiles US GAAP financial statement based on US SoB SBLC and Guarantee principal account and its offset account will not be included in the balance sheet.
+
+Stand by Letter of Credit and Guarantee Sold are recorded as contingent liability Actual Balance Sheet Entry .
+
+If SBLC and Guarantee is sold the LS2 commercial lending application reclassifies the debit account of memo entry from the account for own share to the account for participant share. The resultant entries will be as follows 
+
+JP GAAP treatment is basically consistent with US GAAP treatment. However some MIS systems may be designed to record the LC sold amount separately not only to debit account but also to credit account Offset Account .
+
+Conversion engine prepares Conversion journal entries to separate the sold amount included in LC Principal Offset LCCON and record the amount as LC Principal Sold Offset SDCON .
+
+If conversion engine receives journal entries related to LC Principal it performs the following computation 
+
+Value A will be deducted from LC Principal Offset LCCON and recorded as LC Principal Sold Offset SDCON .
+
+In normal LC issuance transactions the balance of LC Principal LCCON is credit account and the Conversion journal entries will be as follows 
+
+In reduction of LC principal e.g. cancellation or expiration the Conversion journal entry is as follows 
+
+Premium discount on loan is deducted from loan principal amount for US GAAP financial statement presentation.
+
+Loan balances are presented at principal amount. Premium and discount are presented as prepaid expenses and unearned income respectively separate balance sheet item rather than a deduction from loan balances.
+
+Presentation of premium and discount on loans are different in US GAAP and JP GAAP financial statement. Premium and discount is deducted from loan balances in US GAAP financial statements while premium and discount is separately presented as prepaid expenses and unearned income in JP GAAP financial statements.
+
+The LS2 commercial lending application has separate GL accounts for premium and discount on loan in addition to an account for principal amount. JP GAAP and US GAAP financial statements can have different summarization of accounts because the General Ledger system will have separate SoBs for JP GAAP and US GAAP respectively. When the General Ledger system compiles JP GAAP financial statement based on JP SoB premium and discount on loan will be included in Prepaid Expenses and Unearned Income respectively. When the General Ledger system compiles US GAAP financial statement based on US SoB premium and discount on loan will be deducted from Loan balance.
+
+Allowance for loan losses should be deducted from loan principal amount for US GAAP financial statement presentation.
+
+Allowance for loan losses are separate balance sheet items liability account for JP GAAP financial statement presentation.
+
+Presentation of allowance for loan losses is different in US GAAP and JP GAAP financial statements. Loan balance should be presented net of allowance for loan losses in US GAAP financial statements while allowance for loan losses should be presented as separate liability account in JP GAAP financial statements.
+
+The LS2 commercial lending application has a separate GL account for allowance for loan losses in addition to an account for principal amount. JP GAAP and US GAAP financial statements can have different summarization of accounts because the General Ledger system will have separate SoBs for JP GAAP and US GAAP respectively. When the General Ledger system compiles JP GAAP financial statement based on JP SoB allowance for loan losses will be presented as separate liability account. When the General Ledger system compiles US GAAP financial statement based on US SoB allowance for loan losses will be deducted from Loan balance.
+
+Separate balance sheet captions are required for each portfolio held to maturity or held for sale . Additional disclosures are also required based on loan classifications based on collateral type counter party and maturity.
+
+The LS2 commercial lending application has loan classification code tables only in accordance with US rules.
+
+Additional MIS codes for Japanese loan classifications loan on notes and loan on certificate are attached to each loan deal. Each journal entry regarding loans will be accompanied by the MIS code. The General Ledger system will have separate accounts for Loan on Certificate and Loan on Note with respect to each GL Class Code. When the General Ledger system receives journal entries regarding loans the system distinguishes Loan on Notes and Loan on Certificate based on the MIS Code and assigns appropriate GL account codes.
+
+No quantitative GAAP criteria for non accrual status exist FASB Statements No. 114 and 118 . Federal Reserve Bank prefers suspension of interest accrual on 90 days past due or principal past due or critical events.
+
+Accrual of interest income on impaired loans is suspended in accordance with the criteria stipulated in the Japanese tax regulations. Generally accrual is suspended on loans the principal of which are past due or the interest is past due more than six months or critical credit events.
+
+The LS2 commercial lending application has separate accounts for accrual status facility loan and non accrual status facility loan with respect to Commitment Balance Loan Principal Amount and Position Discount and Position Premium Account and will reclassify corresponding balances from accrual status accounts to non accrual status accounts if certain credit events occur. The LS2 commercial lending application also reverses all the outstanding accrued interest receivable on non accrual loans and post memorandum entries for accrued interest on the non accrual status loans. In addition if the facility is non accrual status the amortization of Position Discount Premium will be suspended and all the outstanding accrued fee receivable will be also reversed no memorandum entries for accrued fee will be recorded on non accrual loans and facilities .
+
+Users in US branches should account for non accrual loans in accordance with US Regulatory Accounting and the transfer to non accrual status will occur upon 90 days past due or principal past due loans or critical credit events. However a Japanese office may select the timing of transfer to non accrual status in accordance with JP GAAP even for US GAAP reporting purposes. Accordingly in official US SoB the non accrual loans will be accounted for using the above LS2 functionality although the timing of transfer is in accordance with JP GAAP.
+
+Under JP GAAP timing to transfer to non accrual status is less conservative than US GAAP because it is in accordance with Japanese tax rules. In addition the timing accounting treatment of outstanding accrued interest recorded in prior year and before credit event is different from US GAAP Regulatory accounting. Normally the following accrued interest will not be recorded 
+
+i After the principal s due date the accrued interest income will not be recorded. However the accrued interest income up to principal due date should be recorded unless it should not be recognized due to other criteria below.
+
+ii At each fiscal year end if collection of interest has not occurred at all as to interest receivable that became due more than 6 months before the accrued interest income during the fiscal year for the loan will not be recognized. However for the loan if the accrued interest receivable which was recorded at the last fiscal year end is still outstanding the amount should not be reversed unless the receivable meets the criteria to write off outstanding for 2 years or more .
+
+iii If the collection of the accrued interest receivable whether recorded or unrecorded at past fiscal year is very small less than 5 the accrued interest income for this fiscal year and will not be recorded. However the past years outstanding accrued interest receivable will not be reversed unless the receivable meets the criteria to write off outstanding for 2 years or more .
+
+As explained above the timing of transfer to non accrual status will be consistent between the US and JP SoBs. However in US branches for US Regulatory Reporting purposes manual additional reversal of accrued interest on 90 days past due loans should be made outside the LS2 commercial lending application e.g. using Excel spread sheet.
+
+On the other hand for JP GAAP reporting purposes additional accrual on non accrual loan which does not meet charge off criteria should be recorded. This entry will be input into conversion engine as Conversion journal entries and fed to both of the Adjustment SoB and JP SoB . At each fiscal year end the detailed information regarding non accrual loans and related accrued interest receivable may be reviewed e.g. by a Controller Department . Based on that review the Controller Department will calculate additional accrued interest receivable that should be accrued under JP GAAP. These Conversion journal entries will be input manually through the Manual GL entry function of the conversion engine.
+
+Other interface information for US SoB e.g. Date of Creation Accounting Date Product Code Customer Code etc. is submitted to Adjustment SoB without modification except for Group ID . Group ID for US SoB is US GAAP however this will be replaced with JP GAAP for JP SoB .
+
+Direct loan origination costs will be deferred and recognized over the contractual life of the loan as an adjustment of yield using the interest method in accordance with FASB Statement No. 91.
+
+Fees and commissions earned for loan origination are recognized when related services are provided normally when received . Loan origination costs including direct and indirect costs should be charged to income when incurred. No deferral and amortization of these fees and costs as an adjustment of yield is recorded.
+
+Many users of the LS2 commercial lending application do not use LS2 for deferral and amortization of direct loan cost. Instead total direct costs incurred for all the loan origination activities for the period may be allocated among each deal e.g. by a Controller Department or a Loan Back Office Department . Related entries are input into general ledger system directly by the Controller Department or the Loan Back Office Department.
+
+Deferral and amortization of direct loan origination costs in accordance with FASB Statement will be recorded under US GAAP. However the deferral and amortization should be reversed for Japanese reporting purposes.
+
+Conversion journal entries to reverse US GAAP journal entries will be prepared and input into general ledger system directly by a Controller Department or a Loan Back Office Department to create JP SoB .
+
+The financial reporting system and method described above provides a single workflow that converts a book of original entries in one accounting system to another reporting book in a different accounting system. The system and method allow a user to set up the accounting method of various items according to any country s generally accepted accounting principles GAAP .
+
+The GAAP conversions described above are provided as examples of conversions that can be implemented using a conversion engine in accordance with an embodiment of the present invention. It will be readily apparent that PL SQL procedures may be generated to implement conversions that account for other GAAP differences.
+
+Additionally conversions between US and JP GAAP are provided to illustrate the benefits that can be obtained using a conversion engine. It is contemplated that procedures may be developed to provide conversions between any two or more GAAP standards.
+
+While particular embodiments of the present invention have been described and illustrated it should be understood that the invention is not limited thereto because modifications may be made by persons skilled in the art. The present application contemplates any and all modifications that fall within the spirit and scope of the underlying invention discloses and claimed herein.
+
